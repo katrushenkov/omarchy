@@ -1,8 +1,6 @@
-# Omarchy core package list installed via install/packaging/base.sh
+# core package list installed via install/packaging/base.sh
 # This file is also used by the ISO builder when determining needs
 
-1password-beta
-1password-cli
 aether
 alacritty
 asdcontrol
@@ -56,7 +54,6 @@ inetutils
 inxi
 iwd
 jq
-kdenlive
 kvantum-qt5
 lazydocker
 lazygit
@@ -99,6 +96,7 @@ python-poetry-core
 python-terminaltexteffects
 qt5-wayland
 ripgrep
+ripgrep-all
 satty
 sddm
 signal-desktop
@@ -138,3 +136,21 @@ yay
 zoxide
 zsh
 nnn
+vivaldi
+vivaldi-ffmpeg-codecs
+kvantum-qt5
+net-tools
+zathura
+zathura-pdf-mupdf
+dnsutils
+mediainfo
+simple-scan
+remmina
+freerdp
+keepassxc
+thunar
+thunar-archive-plugin
+thunar-volman
+syncthing
+wev
+telegram-desktop
