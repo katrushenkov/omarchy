@@ -1,4 +1,4 @@
- core package list installed via install/packaging/base.sh
+# core package list installed via install/packaging/base.sh
 # This file is also used by the ISO builder when determining needs
 
 aether
@@ -96,6 +96,7 @@ python-poetry-core
 python-terminaltexteffects
 qt5-wayland
 ripgrep
+ripgrep-all
 satty
 sddm
 signal-desktop
@@ -137,4 +138,19 @@ zsh
 nnn
 vivaldi
 vivaldi-ffmpeg-codecs
-ydotool
+kvantum-qt5
+net-tools
+zathura
+zathura-pdf-mupdf
+dnsutils
+mediainfo
+simple-scan
+remmina
+freerdp
+keepassxc
+thunar
+thunar-archive-plugin
+thunar-volman
+syncthing
+wev
+telegram-desktop
