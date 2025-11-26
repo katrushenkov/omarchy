@@ -11,3 +11,4 @@ rm -rf $HOME/.config/nnn/plugins* >/dev/null
 # Install plugins for nnn file manager
 sh -c "$(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs)"
 
+mkdir -p $HOME/.cache/zsh
