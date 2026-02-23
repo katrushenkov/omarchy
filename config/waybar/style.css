@@ -71,6 +71,10 @@ tooltip {
   opacity: 0;
 }
 
+#custom-VPNCurlNetctl {
+    padding: 0 5px;
+}
+
 #custom-screenrecording-indicator,
 #custom-idle-indicator,
 #custom-notification-silencing-indicator {
