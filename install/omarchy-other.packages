@@ -19,6 +19,7 @@ iwd
 jdk-openjdk
 libpulse
 libsass
+intel-ipu7-camera
 intel-media-driver
 libva-intel-driver
 libva-nvidia-driver
@@ -43,9 +44,11 @@ pipewire-pulse
 qt6-wayland
 sassc
 snapper
+thermald
 webp-pixbuf-loader
 wget
 yay-debug
+tuxedo-drivers-nocompatcheck-dkms
 yt6801-dkms
 zram-generator
 
