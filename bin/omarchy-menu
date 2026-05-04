@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Launch the Omarchy Menu or takes a parameter to jump straight to a submenu.
+# omarchy:summary=Launch the Omarchy Menu or takes a parameter to jump straight to a submenu.
 
 # Set to true when going directly to a submenu, so we can exit directly
 BACK_TO_EXIT=false
@@ -103,9 +103,10 @@ show_trigger_menu() {
 }
 
 show_capture_menu() {
-  case $(menu "Capture" "  Screenshot\n  Screenrecord\n󰃉  Color") in
+  case $(menu "Capture" "  Screenshot\n  Screenrecord\n󰴑  Text Extraction\n󰃉  Color") in
   *Screenshot*) omarchy-capture-screenshot ;;
   *Screenrecord*) show_screenrecord_menu ;;
+  *Text*) omarchy-capture-text-extraction ;;
   *Color*) pkill hyprpicker || hyprpicker -a ;;
   *) back_to show_trigger_menu ;;
   esac
@@ -166,12 +167,13 @@ show_share_menu() {
 }
 
 show_toggle_menu() {
-  local options="󱄄  Screensaver\n󰔎  Nightlight\n󱫖  Idle Lock\n󰍜  Top Bar\n󱂬  Workspace Layout\n  Window Gaps\n  1-Window Ratio\n󰍹  Monitor Scaling\n  Direct Boot\n󰟵  Passwordless Sudo"
+  local options="󱄄  Screensaver\n󰔎  Nightlight\n󱫖  Idle Lock\n󰂛  Notifications\n󰍜  Top Bar\n󱂬  Workspace Layout\n  Window Gaps\n  1-Window Ratio\n󰍹  Monitor Scaling\n  Direct Boot\n󰟵  Passwordless Sudo"
 
   case $(menu "Toggle" "$options") in
   *Screensaver*) omarchy-toggle-screensaver ;;
   *Nightlight*) omarchy-toggle-nightlight ;;
   *Idle*) omarchy-toggle-idle ;;
+  *Notifications*) omarchy-toggle-notification-silencing ;;
   *Bar*) omarchy-toggle-waybar ;;
   *Layout*) omarchy-hyprland-workspace-layout-toggle ;;
   *Ratio*) omarchy-hyprland-window-single-square-aspect-toggle ;;
@@ -194,10 +196,15 @@ show_hardware_menu() {
     options="$options\n󰟸  Touchpad"
   fi
 
+  if omarchy-hw-touchscreen; then
+    options="$options\n󰆽  Touchscreen"
+  fi
+
   case $(menu "Toggle" "$options") in
   *Laptop*) omarchy-hyprland-monitor-internal toggle ;;
   *Mirror*) omarchy-hyprland-monitor-internal-mirror toggle;;
   *Touchpad*) omarchy-toggle-touchpad ;;
+  *Touchscreen*) omarchy-toggle-touchscreen ;;
   *"Hybrid GPU"*) present_terminal omarchy-toggle-hybrid-gpu ;;
   *) back_to show_trigger_menu ;;
   esac
@@ -347,7 +354,7 @@ show_install_editor_menu() {
   *Cursor*) install_and_launch "Cursor" "cursor-bin" "cursor" ;;
   *Zed*) install_and_launch "Zed" "zed" "dev.zed.Zed" ;;
   *Sublime*) install_and_launch "Sublime Text" "sublime-text-4" "sublime_text" ;;
-  *Helix*) install "Helix" "helix" ;;
+  *Helix*) present_terminal omarchy-install-helix ;;
   *Emacs*) install "Emacs" "emacs-wayland" && systemctl --user enable --now emacs.service ;;
   *) show_install_menu ;;
   esac
@@ -379,11 +386,12 @@ show_install_ai_menu() {
 }
 
 show_install_gaming_menu() {
-  case $(menu "Install" "  Steam\n󰢹  NVIDIA GeForce NOW\n  RetroArch [AUR]\n󰍳  Minecraft\n󰖺  Xbox Controller [AUR]") in
+  case $(menu "Install" "  Steam\n  RetroArch\n󰍳  Minecraft\n  Battle.net\n󰢹  NVIDIA GeForce NOW\n󰖺  Xbox Controller [AUR]") in
   *Steam*) present_terminal omarchy-install-steam ;;
-  *GeForce*) present_terminal omarchy-install-geforce-now ;;
-  *RetroArch*) aur_install_and_launch "RetroArch" "retroarch retroarch-assets libretro libretro-fbneo" "com.libretro.RetroArch.desktop" ;;
+  *RetroArch*) present_terminal omarchy-install-retroarch ;;
   *Minecraft*) install_and_launch "Minecraft" "minecraft-launcher" "minecraft-launcher" ;;
+  *Battle.net*) present_terminal omarchy-install-battlenet ;;
+  *GeForce*) present_terminal omarchy-install-geforce-now ;;
   *Xbox*) present_terminal omarchy-install-xbox-controllers ;;
   *) show_install_menu ;;
   esac
