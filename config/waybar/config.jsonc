@@ -4,6 +4,7 @@
   "position": "top",
   "spacing": 0,
   "height": 26,
+  "width": 0,
   "modules-left": ["custom/omarchy", "hyprland/workspaces"],
   "modules-center": ["clock",  "custom/VPNCurlNetctl", "custom/update", "custom/voxtype", "custom/screenrecording-indicator", "custom/idle-indicator", "custom/notification-silencing-indicator"],
   "modules-right": [
@@ -69,7 +70,7 @@
   "custom/weather": {
     "exec": "$OMARCHY_PATH/default/waybar/weather.sh",
     "return-type": "json",
-    "interval": 600,
+    "interval": 60,
     "tooltip": false,
     "on-click": "notify-send -u low \"$(omarchy-weather-status)\""
   },
