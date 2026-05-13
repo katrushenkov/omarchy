@@ -103,6 +103,7 @@ python-gobject
 python-poetry-core
 python-terminaltexteffects
 qt5-wayland
+quickshell
 ripgrep
 ripgrep-all
 satty
