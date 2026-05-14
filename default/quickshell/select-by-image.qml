@@ -12,7 +12,7 @@ ShellRoot {
   property string imageRows: ""
   property string selectionFile: Quickshell.env("OMARCHY_IMAGE_SELECTOR_SELECTION_FILE") || Quickshell.env("OMARCHY_BACKGROUND_SELECTION_FILE")
   property string selectedImage: Quickshell.env("OMARCHY_IMAGE_SELECTOR_SELECTED")
-  property string colorsFile: Quickshell.env("OMARCHY_IMAGE_SELECTOR_COLORS_FILE") || (Quickshell.env("HOME") + "/.config/omarchy/current/theme/background-switcher-colors.json")
+  property string colorsFile: Quickshell.env("OMARCHY_IMAGE_SELECTOR_COLORS_FILE") || (Quickshell.env("HOME") + "/.config/omarchy/current/theme/quickshell.json")
   property int selectedIndex: 0
   property bool imagesLoaded: false
   property bool opened: false
@@ -29,11 +29,12 @@ ShellRoot {
   property color background: "#101315"
   property color foreground: "#cacccc"
   property int expandedWidth: 768
+  property int expandedHeight: 475
   property int sliceWidth: 108
   property int sliceHeight: 432
   property int sliceSpacing: -30
   property int skewOffset: 28
-  property int bottomChromeHeight: showLabels ? (filterable ? 104 : 74) : 30
+  property int bottomChromeHeight: showLabels ? (filterable ? 104 : 74) : (filterable ? 60 : 30)
 
   function fileUrl(path) {
     return "file://" + path.split("/").map(encodeURIComponent).join("/")
@@ -127,19 +128,16 @@ ShellRoot {
   }
 
   function selectAdjacent(direction) {
-    if (!filterText) {
-      select(selectedIndex + direction)
-      return
-    }
+    var count = imageModel.count
+    if (count === 0) return
 
-    var index = selectedIndex + direction
-    while (index >= 0 && index < imageModel.count) {
+    var index = selectedIndex
+    for (var i = 0; i < count; i++) {
+      index = (index + direction + count) % count
       if (itemMatches(index)) {
         select(index)
         return
       }
-
-      index += direction
     }
   }
 
@@ -241,7 +239,7 @@ ShellRoot {
     showLabels = nextShowLabels === true || nextShowLabels === "true"
     filterable = nextFilterable === true || nextFilterable === "true"
     filterText = ""
-    colorsFile = nextColorsFile || (Quickshell.env("HOME") + "/.config/omarchy/current/theme/background-switcher-colors.json")
+    colorsFile = nextColorsFile || (Quickshell.env("HOME") + "/.config/omarchy/current/theme/quickshell.json")
     if (nextColorsRaw)
       loadColors(nextColorsRaw)
     imageModel.clear()
@@ -380,7 +378,7 @@ ShellRoot {
     Item {
       id: card
       width: Math.min(parent.width - 80, root.expandedWidth + 13 * (root.sliceWidth + root.sliceSpacing) + 40)
-      height: root.sliceHeight + 30 + root.bottomChromeHeight
+      height: root.expandedHeight + 30 + root.bottomChromeHeight
       anchors.centerIn: parent
 
       MouseArea { anchors.fill: parent; onClicked: {} }
@@ -447,7 +445,8 @@ ShellRoot {
             visible: nearby
             x: selected ? carousel.previewX : (relativeIndex < 0 ? carousel.previewX + relativeIndex * carousel.itemStep : carousel.previewX + root.expandedWidth + root.sliceSpacing + (relativeIndex - 1) * carousel.itemStep)
             width: selected ? root.expandedWidth : root.sliceWidth
-            height: carousel.height
+            height: selected ? root.expandedHeight : root.sliceHeight
+            y: selected ? 0 : (root.expandedHeight - root.sliceHeight) / 2
             z: selected ? 100 : 50 - Math.min(Math.abs(relativeIndex), 40)
 
             readonly property real skAbs: Math.abs(root.skewOffset)
@@ -478,25 +477,6 @@ ShellRoot {
               }
             }
 
-            Shape {
-              x: item.selected ? 4 : 2
-              y: item.selected ? 10 : 5
-              width: item.width
-              height: item.height
-              opacity: item.selected ? 0.5 : 0.32
-              antialiasing: true
-              preferredRendererType: Shape.CurveRenderer
-              ShapePath {
-                fillColor: root.background
-                strokeColor: "transparent"
-                startX: item.topLeft; startY: 0
-                PathLine { x: item.topRight; y: 0 }
-                PathLine { x: item.bottomRight; y: item.height }
-                PathLine { x: item.bottomLeft; y: item.height }
-                PathLine { x: item.topLeft; y: 0 }
-              }
-            }
-
             Item {
               anchors.fill: parent
               layer.enabled: true
@@ -521,7 +501,6 @@ ShellRoot {
               Rectangle {
                 anchors.fill: parent
                 color: root.withAlpha(root.background, item.selected ? 0 : 0.42)
-                Behavior on color { ColorAnimation { duration: 120 } }
               }
             }
 
@@ -568,14 +547,14 @@ ShellRoot {
       }
 
       Text {
-        visible: root.filterable
+        visible: root.filterable && root.filterText
         anchors.top: selectedLabel.bottom
         anchors.topMargin: 8
         anchors.horizontalCenter: carousel.horizontalCenter
         width: root.expandedWidth
-        text: root.filterText ? ("Filter: " + root.filterText + " (" + root.matchingCount() + ")") : "Type to filter"
+        text: root.filterText
         color: root.foreground
-        opacity: root.filterText ? 0.85 : 0.55
+        opacity: 0.85
         style: Text.Outline
         styleColor: root.withAlpha(root.background, 0.7)
         font.pixelSize: 14
