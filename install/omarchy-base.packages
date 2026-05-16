@@ -2,7 +2,6 @@
 # This file is also used by the ISO builder when determining needs
 
 aether
-alacritty
 alsa-utils
 asdcontrol
 avahi
@@ -37,6 +36,7 @@ fcitx5-qt
 fd
 ffmpegthumbnailer
 fontconfig
+foot
 fzf
 github-cli
 gnome-calculator
