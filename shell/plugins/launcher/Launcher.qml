@@ -30,6 +30,12 @@ Item {
   property bool deleteConfirmOpen: false
   property var deleteEntry: null
 
+  // Synthetic entries for bare executables found on $PATH, so the launcher
+  // behaves like a drun+run combi: anything you could type at a shell prompt
+  // shows up alongside .desktop entries, not just apps with launcher metadata.
+  property var pathExecutableEntries: []
+  property var pendingPathExecutableSet: ({})
+
   // Maps an icon name to a file on disk (e.g. "omacut" -> ".../apps/omacut.svg").
   // Used as a fallback for icons that Qt's themed lookup misses because they were
   // installed after this process started (its icon cache never re-scans). Refreshed
@@ -215,7 +221,47 @@ Item {
 
   function sortedEntries(query) {
     var values = DesktopEntries.applications.values || []
-    return LauncherSearch.sortedEntries(values, query, function(entry) { return root.isHiddenEntry(entry) })
+    var combined = values.concat(root.pathExecutableEntries)
+    return LauncherSearch.sortedEntries(combined, query, function(entry) { return root.isHiddenEntry(entry) })
+  }
+
+  function pathExecutableScanCommand() {
+    // Enumerate every executable regular file/symlink sitting directly in a
+    // $PATH directory, one basename per line. Mirrors what a shell would
+    // tab-complete, so anything runnable from a terminal is launchable here too.
+    return [
+      'shopt -s nullglob;',
+      'IFS=":"; read -ra __dirs <<< "$PATH"; unset IFS;',
+      'for d in "${__dirs[@]}"; do',
+      '  [[ -d $d ]] || continue;',
+      '  for f in "$d"/*; do',
+      '    [[ -f $f && -x $f ]] && printf "%s\\n" "${f##*/}";',
+      '  done;',
+      'done'
+    ].join(' ')
+  }
+
+  function indexPathExecutableLine(line) {
+    var name = String(line || "").trim()
+    if (name.length > 0) root.pendingPathExecutableSet[name] = true
+  }
+
+  function buildPathExecutableEntries(names) {
+    var entries = []
+    for (var i = 0; i < names.length; i++) {
+      entries.push({
+        id: "exec:" + names[i],
+        name: names[i],
+        genericName: "Executable",
+        comment: "",
+        keywords: [],
+        icon: "",
+        noDisplay: false,
+        isExecutable: true,
+        execName: names[i]
+      })
+    }
+    return entries
   }
 
   function rebuildDisplay() {
@@ -264,6 +310,16 @@ Item {
     if (index < 0 || index >= root.filteredEntries.length) return
     var entry = root.filteredEntries[index]
     if (!entry) return
+
+    if (entry.isExecutable) {
+      var execName = String(entry.execName || "")
+      if (!execName) return
+      root.beginLaunchFeedback(entry)
+      root.dismiss()
+      Quickshell.execDetached(Util.hyprExecCommand(Util.shellQuote(execName)))
+      return
+    }
+
     var desktopId = String(entry.id || "")
     if (!desktopId) return
 
@@ -275,7 +331,7 @@ Item {
   function requestDeleteIndex(index) {
     if (index < 0 || index >= root.filteredEntries.length) return
     var entry = root.filteredEntries[index]
-    if (!entry) return
+    if (!entry || entry.isExecutable) return
     root.deleteEntry = entry
     deleteConfirm.selectedIndex = 1
     root.deleteConfirmOpen = true
@@ -354,6 +410,18 @@ Item {
     onTriggered: if (!iconIndexScan.running) iconIndexScan.running = true
   }
 
+  Process {
+    id: pathExecutableScan
+    command: ["bash", "-lc", root.pathExecutableScanCommand()]
+    stdout: SplitParser { onRead: function(line) { root.indexPathExecutableLine(line) } }
+    onStarted: root.pendingPathExecutableSet = ({})
+    onExited: {
+      var names = Object.keys(root.pendingPathExecutableSet).sort()
+      root.pathExecutableEntries = root.buildPathExecutableEntries(names)
+      if (root.opened) root.rebuildDisplay()
+    }
+  }
+
   QtObject {
     id: hiddenEntryOutput
     property string text: ""
@@ -412,6 +480,7 @@ Item {
   Component.onCompleted: {
     hiddenEntryScan.running = true
     iconIndexScan.running = true
+    pathExecutableScan.running = true
   }
 
   PanelWindow {
@@ -467,10 +536,10 @@ Item {
           } else if (event.key === Qt.Key_Backspace) {
             if (root.filterText.length > 0) root.setFilter(root.filterText.slice(0, -1))
             event.accepted = true
-          } else if (event.key === Qt.Key_Up) {
+          } else if (event.key === Qt.Key_Up || (event.key === Qt.Key_K && (event.modifiers & Qt.ControlModifier))) {
             root.select(-1)
             event.accepted = true
-          } else if (event.key === Qt.Key_Down) {
+          } else if (event.key === Qt.Key_Down || (event.key === Qt.Key_J && (event.modifiers & Qt.ControlModifier))) {
             root.select(1)
             event.accepted = true
           } else if (event.key === Qt.Key_PageUp) {

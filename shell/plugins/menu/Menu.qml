@@ -841,10 +841,10 @@ Item {
             if (root.filterText.length > 0) root.setFilter(root.filterText.slice(0, -1))
             else root.goBack()
             event.accepted = true
-          } else if (event.key === Qt.Key_Up) {
+          } else if (event.key === Qt.Key_Up || (event.key === Qt.Key_K && (event.modifiers & Qt.ControlModifier))) {
             root.select(-1)
             event.accepted = true
-          } else if (event.key === Qt.Key_Down) {
+          } else if (event.key === Qt.Key_Down || (event.key === Qt.Key_J && (event.modifiers & Qt.ControlModifier))) {
             root.select(1)
             event.accepted = true
           } else if (event.key === Qt.Key_PageUp) {

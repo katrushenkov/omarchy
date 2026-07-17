@@ -352,10 +352,10 @@ Item {
             if (event.modifiers & Qt.ShiftModifier) root.requestClearHistory()
             else root.removeDisplayIndex(root.selectedIndex)
             event.accepted = true
-          } else if (event.key === Qt.Key_Up) {
+          } else if (event.key === Qt.Key_Up || (event.key === Qt.Key_K && (event.modifiers & Qt.ControlModifier))) {
             root.select(-1)
             event.accepted = true
-          } else if (event.key === Qt.Key_Down) {
+          } else if (event.key === Qt.Key_Down || (event.key === Qt.Key_J && (event.modifiers & Qt.ControlModifier))) {
             root.select(1)
             event.accepted = true
           } else if (event.key === Qt.Key_PageUp) {
