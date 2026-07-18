@@ -293,11 +293,21 @@ if (( ! yes )); then
   package_mode="production Omarchy packages"
   (( use_dev_packages )) && package_mode="dev packages [omarchy-dev / omarchy-settings-dev]"
 
+  printf '\033[2J\033[3J\033[H' >/dev/tty
   cat <<EOF
+████████▄   ███    █▄     ▄████████     ███         ███        ▄████████  ▄██████▄
+███    ███  ███    ███   ███    ███ ▀█████████▄ ▀█████████▄   ███    ███ ███    ███
+███    ███  ███    ███   ███    ███    ▀███▀▀██    ▀███▀▀██   ███    ███ ███    ███
+███    ███  ███    ███   ███    ███     ███   ▀     ███   ▀  ▄███▄▄▄▄██▀ ███    ███
+███    ███  ███    ███ ▀███████████     ███         ███     ▀▀███▀▀▀▀▀   ███    ███
+███    ███  ███    ███   ███    ███     ███         ███     ▀███████████ ███    ███
+███  ▀ ███  ███    ███   ███    ███     ███         ███       ███    ███ ███    ███
+ ▀██████▀▄█ ████████▀    ███    █▀     ▄████▀      ▄████▀     ███    ███  ▀██████▀
+                                                              ███    ███
 
-This will upgrade Omarchy for user '$target_user' to Omarchy quattro using the '$channel' channel and $package_mode.
-
-WARNING: This is a one-way street! You cannot downgrade from Quattro. Make sure you have a backup.
+Upgrading Omarchy to Quattro is a one-way street!
+You cannot downgrade from Quattro.
+Make sure you have a backup.
 
 EOF
 
@@ -577,6 +587,30 @@ install_omarchy_quattro_packages() {
   )
   as_root pacman -S --needed --noconfirm --ask 4 --overwrite='*' "${audio_packages[@]}"
   mark_packages_explicit "${audio_packages[@]}"
+}
+
+install_hardware_transition_packages() {
+  local hardware_packages=()
+
+  if lspci | grep -qiE '(Multimedia audio controller|Audio device).*Intel'; then
+    hardware_packages+=(sof-firmware)
+  fi
+
+  if lspci | grep -iE '(VGA|Display).*Intel' >/dev/null; then
+    hardware_packages+=(vulkan-intel)
+  fi
+  if lspci | grep -iE '(VGA|Display).*AMD' >/dev/null; then
+    hardware_packages+=(vulkan-radeon)
+  fi
+  if lspci | grep -iE '(VGA|Display).*Apple' >/dev/null; then
+    hardware_packages+=(vulkan-asahi)
+  fi
+
+  if (( ${#hardware_packages[@]} > 0 )); then
+    log "Installing hardware support needed by the Omarchy quattro layout"
+    as_root pacman -S --needed --noconfirm "${hardware_packages[@]}"
+    mark_packages_explicit "${hardware_packages[@]}"
+  fi
 }
 
 remove_retired_default_packages() {
@@ -2216,6 +2250,16 @@ rm -f "$state_dir/finalize-user.done"
 USER_SETUP
 }
 
+apply_user_hardware_transition() {
+  if grep -qi "DX13260" /sys/class/dmi/id/product_name 2>/dev/null ||
+    grep -qi "DX13260" /sys/class/dmi/id/product_family 2>/dev/null; then
+    log "Adjusting text scaling for Dell XPS 13 DX13260"
+    if ! run_as_user_session gsettings set org.gnome.desktop.interface text-scaling-factor 0.95; then
+      warn "Could not adjust text scaling for Dell XPS 13 DX13260; continuing."
+    fi
+  fi
+}
+
 write_legacy_theme_hyprland_conf() {
   run_as_user env HOME="$target_home" bash <<'THEME_COMPAT'
 set -euo pipefail
@@ -2329,6 +2373,7 @@ remove_legacy_installer_package
 remove_legacy_limine_configs
 remove_conflicting_legacy_packages
 install_omarchy_quattro_packages
+install_hardware_transition_packages
 normalize_limine_config
 configure_snapper_policy
 configure_lock_authentication
@@ -2337,6 +2382,7 @@ cleanup_legacy_user_paths
 apply_system_transition
 suppress_hyprland_config_reload
 apply_user_transition
+apply_user_hardware_transition
 run_as_user env \
   HOME="$target_home" \
   USER="$target_user" \
@@ -2364,18 +2410,14 @@ fi
 
 cat <<EOF
 
-Omarchy quattro upgrade complete.
+WARNING: You must address any errors in the above before rebooting.
 
-IMPORTANT: Review the output above before rebooting.
-DO NOT REBOOT IF THERE ARE ERRORS above; fix the errors or ask for help first.
-
-A reboot is required to finish switching to the package-backed Omarchy quattro session.
 EOF
 
 if (( auto_reboot )); then
   log "Rebooting because --reboot was passed"
   as_root systemctl reboot
-elif gum confirm "Reboot now?"; then
+elif gum confirm "Reboot to complete Quattro upgrade now?"; then
   as_root systemctl reboot
 else
   echo "Not rebooting. Please reboot manually after confirming there were no errors."
