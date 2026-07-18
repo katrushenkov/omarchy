@@ -297,18 +297,11 @@ if (( ! yes )); then
 
 This will upgrade Omarchy for user '$target_user' to Omarchy quattro using the '$channel' channel and $package_mode.
 
-It will install the package-backed Omarchy quattro stack, overwrite files previously
-written by the legacy installer, remove retired default packages, and apply the
-Omarchy quattro system/user transition inline. A reboot is strongly recommended afterward.
+WARNING: This is a one-way street! You cannot downgrade from Quattro. Make sure you have a backup.
+
 EOF
 
-  if [[ -r /dev/tty ]]; then
-    printf '\nContinue? [y/N] ' >/dev/tty
-    read -r answer </dev/tty
-    [[ $answer =~ ^[Yy]$ ]] || exit 0
-  else
-    fail "No TTY available for confirmation. Re-run with --yes to proceed non-interactively."
-  fi
+  gum confirm "Continue with upgrade?" || exit 0
 fi
 
 sudo_keepalive_pid=""
@@ -1175,14 +1168,8 @@ run_post_upgrade_update_steps() {
       omarchy-update-available 2>&1) || update_status=$?
 
     if (( update_status == 0 )); then
-      warn "Updates are still available after the upgrade; first-run will still offer to run omarchy-update:"
+      warn "Updates are still available after the upgrade; run omarchy-update after reboot:"
       printf '%s\n' "$update_output" >&2
-    else
-      # The live upgrade has already completed the package update. Let first-run
-      # finish session-only setup, but skip its generic fresh-install update
-      # toast when the update checker confirms nothing remains.
-      run_as_user mkdir -p "$target_home/.local/state/omarchy"
-      run_as_user touch "$target_home/.local/state/omarchy/skip-first-run-update-notification"
     fi
   fi
 }
@@ -1722,6 +1709,11 @@ CHROMIUM_FLAGS_PATCH_PY
   done
 }
 
+# True if any Chromium-family browser that stores the Copy URL shortcut is running.
+browser_is_running() {
+  pgrep -x 'chromium|chrome|brave|msedge|vivaldi-bin|vivaldi|opera|helium' >/dev/null 2>&1
+}
+
 repair_chromium_copy_url_shortcuts() {
   local profile_root preferences
   local -a profile_roots=(
@@ -1736,6 +1728,7 @@ repair_chromium_copy_url_shortcuts() {
     "$HOME/.config/opera"
     "$HOME/.config/helium"
   )
+  local -a pending=()
 
   for profile_root in "${profile_roots[@]}"; do
     [[ -d $profile_root ]] || continue
@@ -1743,8 +1736,23 @@ repair_chromium_copy_url_shortcuts() {
     for preferences in "$profile_root"/*/Preferences; do
       [[ -f $preferences ]] || continue
       grep -qF 'bocglpkldciamkbmlphanhkfnhpmnbma' "$preferences" || continue
+      pending+=("$preferences")
+    done
+  done
 
-      python3 - "$preferences" "$preferences.omarchy-upgrade-to-quattro.$BACKUP_SUFFIX.bak" <<'CHROMIUM_SHORTCUTS_PATCH_PY'
+  (( ${#pending[@]} )) || return 0
+
+  # A running browser holds Preferences in memory and rewrites it on exit,
+  # which would revert this repair. Ask the user to close it first.
+  if browser_is_running && (( ! yes )) && [[ -r /dev/tty ]]; then
+    if ! gum confirm "Close all browser windows before the Copy URL shortcut is repaired, then continue"; then
+      echo "Skipped Copy URL shortcut repair; re-run after closing your browser." >&2
+      return 0
+    fi
+  fi
+
+  for preferences in "${pending[@]}"; do
+    python3 - "$preferences" "$preferences.omarchy-upgrade-to-quattro.$BACKUP_SUFFIX.bak" <<'CHROMIUM_SHORTCUTS_PATCH_PY'
 import json
 import shutil
 import sys
@@ -1774,7 +1782,6 @@ if changed:
     shutil.copy2(path, backup_path)
     path.write_text(json.dumps(preferences, separators=(",", ":")))
 CHROMIUM_SHORTCUTS_PATCH_PY
-    done
   done
 }
 
@@ -1941,7 +1948,7 @@ repair_sleep_lock_unit_override
 install_bash_startup
 
 unset rel file backup retired_config_files always_copy_config_files uwsm_env known_config_default_hashes_by_key
-unset -f file_sha256 known_config_default_hashes default_hash_paths is_known_default_hash backup_config_file migrate_uwsm_env_customizations is_retired_config_file copy_config_default copy_missing_config_defaults refresh_known_config_defaults mark_removed_preinstalls_from_legacy_bindings copy_always_config_defaults repair_chromium_copy_url_extension_flags repair_chromium_copy_url_shortcuts repair_sleep_lock_unit_override is_known_bashrc_default install_bash_startup
+unset -f file_sha256 known_config_default_hashes default_hash_paths is_known_default_hash backup_config_file migrate_uwsm_env_customizations is_retired_config_file copy_config_default copy_missing_config_defaults refresh_known_config_defaults mark_removed_preinstalls_from_legacy_bindings copy_always_config_defaults repair_chromium_copy_url_extension_flags browser_is_running repair_chromium_copy_url_shortcuts repair_sleep_lock_unit_override is_known_bashrc_default install_bash_startup
 
 mkdir -p "$HOME/.agents/skills" "$HOME/.claude/skills" "$HOME/.codex/skills" "$HOME/.pi/agent/skills"
 if [[ -d $root/default/omarchy-skill ]]; then
@@ -2201,10 +2208,8 @@ if command -v xdg-mime >/dev/null 2>&1; then
   xdg-mime default HEY.desktop x-scheme-handler/mailto || true
 fi
 
-if [[ -f $state_dir/first-run-user.done ]]; then
-  "$root/bin/omarchy-done" mark first-run-user
-  rm -f "$state_dir/first-run-user.done"
-fi
+"$root/bin/omarchy-done" mark first-run-user
+rm -f "$state_dir/first-run-user.done"
 
 "$root/bin/omarchy-done" mark finalize-user
 rm -f "$state_dir/finalize-user.done"
@@ -2370,15 +2375,8 @@ EOF
 if (( auto_reboot )); then
   log "Rebooting because --reboot was passed"
   as_root systemctl reboot
-elif { exec {tty_fd}<>/dev/tty; } 2>/dev/null; then
-  printf '\nReboot now? [y/N] ' >&$tty_fd
-  read -r reboot_answer <&$tty_fd || reboot_answer=""
-  exec {tty_fd}>&-
-  if [[ $reboot_answer =~ ^[Yy]([Ee][Ss])?$ ]]; then
-    as_root systemctl reboot
-  else
-    echo "Not rebooting. Please reboot manually after confirming there were no errors."
-  fi
+elif gum confirm "Reboot now?"; then
+  as_root systemctl reboot
 else
-  echo "No TTY available for reboot prompt. Please reboot manually after confirming there were no errors."
+  echo "Not rebooting. Please reboot manually after confirming there were no errors."
 fi

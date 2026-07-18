@@ -12,10 +12,10 @@ o.bind("SUPER + ALT + K", "Show Tmux key bindings", "omarchy-menu-tmux-keybindin
 o.bind("XF86Calculator", "Calculator", "gnome-calculator")
 
 o.bind_toggle("SUPER + SHIFT + SPACE", "Toggle top bar", "bar")
-o.bind("SUPER + SHIFT + CTRL + UP", "Move bar to top", "omarchy-bar-position top")
-o.bind("SUPER + SHIFT + CTRL + DOWN", "Move bar to bottom", "omarchy-bar-position bottom")
-o.bind("SUPER + SHIFT + CTRL + LEFT", "Move bar to left", "omarchy-bar-position left")
-o.bind("SUPER + SHIFT + CTRL + RIGHT", "Move bar to right", "omarchy-bar-position right")
+o.bind("SUPER + SHIFT + CTRL + UP", "Move bar to top", "omarchy-bar position top")
+o.bind("SUPER + SHIFT + CTRL + DOWN", "Move bar to bottom", "omarchy-bar position bottom")
+o.bind("SUPER + SHIFT + CTRL + LEFT", "Move bar to left", "omarchy-bar position left")
+o.bind("SUPER + SHIFT + CTRL + RIGHT", "Move bar to right", "omarchy-bar position right")
 o.bind("SUPER + CTRL + SPACE", "Background switcher", "omarchy-menu toggle background")
 o.bind("SUPER + SHIFT + CTRL + SPACE", "Theme menu", "omarchy-menu toggle theme")
 o.bind("SUPER + BACKSPACE", "Toggle window transparency", "omarchy-hyprland-window-transparency-toggle")
@@ -38,6 +38,8 @@ o.bind("switch:off:Lid Switch", nil, "omarchy-hyprland-monitor-clamshell", { loc
 
 o.bind("PRINT", "Screenshot", "omarchy-capture-screenshot")
 o.bind("ALT + PRINT", "Screenrecording", "omarchy-capture-screenrecording --stop-recording || omarchy-menu toggle trigger.capture.screenrecord")
+o.bind("SUPER + ALT + code:34", "Make webcam overlay smaller", "omarchy-capture-webcam-resize smaller")
+o.bind("SUPER + ALT + code:35", "Make webcam overlay larger", "omarchy-capture-webcam-resize larger")
 o.bind("SUPER + PRINT", "Color picker", "pkill hyprpicker || hyprpicker -a")
 o.bind("SUPER + CTRL + PRINT", "Extract text (OCR) from screenshot", "omarchy-capture-text")
 

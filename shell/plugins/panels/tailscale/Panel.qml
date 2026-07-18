@@ -12,7 +12,6 @@ Panel {
   ipcTarget: "omarchy.tailscale"
   manageIpc: false
 
-  readonly property real openIndicatorInlineOffset: bar && bar.vertical ? 0 : Style.spaceReal(1.5)
   property string focusSection: "header"
   property int headerIndex: 0
   property int accountIndex: 0
@@ -360,52 +359,26 @@ Panel {
     function status(): string { return tailscale.statusText }
   }
 
-  Item {
+  BarIconButton {
     id: button
     anchors.fill: parent
-    implicitWidth: root.bar && root.bar.vertical ? root.bar.barSize : Style.space(27)
-    implicitHeight: root.bar && root.bar.vertical ? Style.space(26) : (root.bar ? root.bar.barSize : Style.space(26))
-
-    property var registeredBar: null
-
-    function triggerPress(buttonCode) {
+    bar: root.bar
+    iconComponent: Component {
+      Item {
+        TailscaleIcon {
+          anchors.centerIn: parent
+          iconSize: Style.space(11)
+          color: root.barIconColor
+          badgeColor: root.urgent
+          crossed: !tailscale.running && !tailscale.needsLogin
+          warning: tailscale.needsLogin
+        }
+      }
+    }
+    onPressed: function(buttonCode) {
       if (buttonCode === Qt.RightButton) tailscale.toggleTailscale()
       else if (buttonCode === Qt.MiddleButton) tailscale.refresh()
       else root.toggle()
-    }
-
-    function syncClickRegistration() {
-      if (registeredBar && registeredBar.unregisterClickTarget) registeredBar.unregisterClickTarget(button)
-      registeredBar = root.bar
-      if (registeredBar && registeredBar.registerClickTarget) registeredBar.registerClickTarget(button)
-    }
-
-    Component.onCompleted: syncClickRegistration()
-    Component.onDestruction: if (registeredBar && registeredBar.unregisterClickTarget) registeredBar.unregisterClickTarget(button)
-
-    Connections {
-      target: root
-      function onBarChanged() { button.syncClickRegistration() }
-    }
-
-    TailscaleIcon {
-      anchors.centerIn: parent
-      anchors.horizontalCenterOffset: root.openIndicatorInlineOffset
-      anchors.verticalCenterOffset: -Style.space(1)
-      iconSize: Style.space(12) * 0.85
-      color: root.barIconColor
-      badgeColor: root.urgent
-      crossed: !tailscale.running && !tailscale.needsLogin
-      warning: tailscale.needsLogin
-    }
-
-    MouseArea {
-      id: mouseArea
-      anchors.fill: parent
-      acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-      hoverEnabled: true
-      cursorShape: Qt.PointingHandCursor
-      onClicked: function(mouse) { button.triggerPress(mouse.button) }
     }
   }
 
@@ -494,6 +467,56 @@ Panel {
                     onClicked: tailscale.toggleTailscale()
                   }
                 }
+              }
+            }
+          }
+
+          CursorSurface {
+            id: connectionRow
+            visible: tailscale.installed && !tailscale.running
+            width: parent.width
+            implicitHeight: connectionText.implicitHeight + Style.spacing.rowPaddingX
+            hasCursor: root.cursorActive && root.focusSection === "header"
+            foreground: root.foreground
+            fill: root.hoverFill
+
+            MouseArea {
+              anchors.fill: parent
+              hoverEnabled: true
+              enabled: !tailscale.busy
+              cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+              onEntered: {
+                root.cursorActive = true
+                root.focusSection = "header"
+              }
+              onClicked: tailscale.loginOrUp()
+            }
+
+            Column {
+              id: connectionText
+              anchors.left: parent.left
+              anchors.right: parent.right
+              anchors.verticalCenter: parent.verticalCenter
+              anchors.leftMargin: Style.space(12)
+              anchors.rightMargin: Style.space(12)
+              spacing: Style.space(2)
+
+              Text {
+                width: parent.width
+                text: tailscale.needsLogin ? "Authorize this device" : "Connect Tailscale"
+                color: root.foreground
+                font.family: root.fontFamily
+                font.pixelSize: Style.font.body
+                font.weight: Font.Medium
+              }
+
+              Text {
+                width: parent.width
+                text: tailscale.needsLogin ? "Open Tailscale to restore this device's access" : "Reconnect with the current Tailscale settings"
+                color: root.dim
+                font.family: root.fontFamily
+                font.pixelSize: Style.font.caption
+                wrapMode: Text.WordWrap
               }
             }
           }

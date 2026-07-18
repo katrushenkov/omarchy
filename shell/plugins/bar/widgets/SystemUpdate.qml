@@ -52,11 +52,12 @@ BarWidget {
     onTriggered: root.refresh()
   }
 
-  WidgetButton {
+  BarIconButton {
     id: button
     anchors.fill: parent
     bar: root.bar
     text: "\uf021"
+    slotSize: Style.bar.statusSlot
     fontSize: Style.font.caption
     tooltipText: ""
     onPressed: root.runUpdate()

@@ -37,7 +37,7 @@ BarWidget {
   }
 
   visible: panelLoader.item && panelLoader.item.label !== ""
-  implicitWidth: bar && bar.vertical ? button.implicitWidth : button.implicitWidth + Style.spacing.labelGap
+  implicitWidth: button.implicitWidth
   implicitHeight: button.implicitHeight
 
   onBarChanged: injectPanel()
@@ -54,16 +54,13 @@ BarWidget {
     }
   }
 
-  WidgetButton {
+  BarIconButton {
     id: button
-    anchors.verticalCenter: parent.verticalCenter
-    x: bar && bar.vertical ? Math.round((parent.width - width) / 2) : 0
-    width: implicitWidth
-    height: implicitHeight
+    anchors.fill: parent
     bar: root.bar
     text: panelLoader.item ? panelLoader.item.label : ""
+    slotSize: Style.bar.statusSlot
     active: panelLoader.item && panelLoader.item.klass === "active"
-    horizontalMargin: 2.5
     // Tooltip suppressed because the panel is the detail view.
     tooltipText: ""
 
