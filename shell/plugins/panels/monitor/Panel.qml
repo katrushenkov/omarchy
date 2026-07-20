@@ -213,7 +213,7 @@ Panel {
     }
 
     root.brightnessSetQueued = false
-    setBrightnessProc.command = ["bash", "-lc", "omarchy-brightness-display --no-osd " + percent + "%"]
+    setBrightnessProc.command = ["bash", "-c", "omarchy-brightness-display --no-osd " + percent + "%"]
     setBrightnessProc.running = true
   }
 
@@ -248,7 +248,7 @@ Panel {
   }
 
   function setScale(scale) {
-    actionProc.command = ["bash", "-lc", "omarchy-hyprland-monitor-scaling " + scale]
+    actionProc.command = ["bash", "-c", "omarchy-hyprland-monitor-scaling " + scale]
     if (!actionProc.running) actionProc.running = true
   }
 
@@ -278,9 +278,12 @@ Panel {
   onDisplaysChanged: clampCursor()
   onVisibleSectionsChanged: clampCursor()
 
+  // Only poll while the panel is open; the bar glyph tracks monitor count via
+  // Quickshell.screens, and open-time refresh + Component.onCompleted cover the
+  // rest. External brightness changes are reflected whenever the panel is open.
   Timer {
     interval: 5000
-    running: true
+    running: root.opened
     repeat: true
     onTriggered: root.refresh()
   }
@@ -341,7 +344,7 @@ Panel {
     id: button
     anchors.fill: parent
     bar: root.bar
-    text: root.displays.length > 1 ? "󰍺" : "󰍹"
+    text: Quickshell.screens.length > 1 ? "󰍺" : "󰍹"
     onPressed: function(b) { root.toggle() }
     onWheelMoved: function(delta) {
       if (root.brightnessAvailable) root.setBrightness(root.brightnessPercent + (delta > 0 ? 5 : -5))
