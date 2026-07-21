@@ -316,7 +316,7 @@ Item {
       if (!execName) return
       root.beginLaunchFeedback(entry)
       root.dismiss()
-      Quickshell.execDetached(Util.hyprExecCommand(Util.shellQuote(execName)))
+      Util.execDetached(execName)
       return
     }
 
@@ -325,7 +325,7 @@ Item {
 
     root.beginLaunchFeedback(entry)
     root.dismiss()
-    Util.execDetached("gtk-launch " + Util.shellQuote(desktopId))
+    Util.execDetached("gtk-launch " + Util.shellQuote(desktopId + ".desktop"))
   }
 
   function requestDeleteIndex(index) {
