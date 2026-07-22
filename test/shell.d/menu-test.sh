@@ -64,6 +64,20 @@ assert(menu.isDescendantOf(merged.items, 'style.theme', 'style'), 'menu detects 
 assertEqual(menu.childCount(merged.items, merged.itemOrder, 'style'), 1, 'menu counts children')
 assertEqual(menu.labelFor({ id: 'style.theme', label: 'Theme', checked: 'cmd' }, { 'style.theme': true }), 'Theme ✓', 'menu appends checked marker')
 
+const visibilityItems = {
+  hardware: menu.normalizeItem('hardware', { label: 'Hardware' }),
+  laptop: menu.normalizeItem('hardware.laptop', { label: 'Laptop', when: 'is-laptop', action: 'toggle-laptop' }),
+  nested: menu.normalizeItem('nested', { label: 'Nested' }),
+  branch: menu.normalizeItem('nested.branch', { label: 'Branch' }),
+  leaf: menu.normalizeItem('nested.branch.leaf', { label: 'Leaf', when: 'has-leaf', action: 'run-leaf' }),
+  dynamic: menu.normalizeItem('dynamic', { label: 'Dynamic', provider: 'items' })
+}
+const visibilityOrder = Object.keys(visibilityItems)
+assert(!menu.isVisible(visibilityItems, visibilityOrder, { 'hardware.laptop': false }, visibilityItems.hardware), 'menu hides a submenu with no visible children')
+assert(menu.isVisible(visibilityItems, visibilityOrder, { 'hardware.laptop': true }, visibilityItems.hardware), 'menu shows a submenu with a visible child')
+assert(!menu.isVisible(visibilityItems, visibilityOrder, { 'nested.branch.leaf': false }, visibilityItems.nested), 'menu hides recursively empty submenus')
+assert(menu.isVisible(visibilityItems, visibilityOrder, {}, visibilityItems.dynamic), 'menu keeps provider-backed submenus visible')
+
 const entry = merged.items['style.theme']
 assert(menu.matchesQuery(entry, 'theme', true), 'menu matches labels and aliases')
 assert(menu.matchesQuery(entry, 'colors', true), 'menu matches aliases')
@@ -102,6 +116,50 @@ assert(
   'menu update Omarchy entry renders the private glyph with the Omarchy font'
 )
 assert(
+  defaultById['setup.input'].action.includes('input.lua'),
+  'menu keeps Input as a direct config action'
+)
+assert(
+  defaultById['setup.direct-boot'].action.includes('omarchy-config-direct-boot'),
+  'menu places Direct Boot directly under Setup'
+)
+assertEqual(
+  defaultItems.findIndex(item => item.id === 'setup.direct-boot'),
+  defaultItems.findIndex(item => item.id === 'setup.input') + 1,
+  'menu lists Direct Boot immediately below Input'
+)
+assert(
+  defaultById['setup.security.passwordless-sudo'].action.includes('omarchy-sudo-passwordless'),
+  'menu places Passwordless Sudo under Setup > Security'
+)
+assert(
+  !defaultById['trigger.toggle.direct-boot'] && !defaultById['trigger.toggle.passwordless-sudo'],
+  'menu removes the relocated toggles from Trigger > Toggle'
+)
+assert(
+  defaultById['style.bar.position'].kind === 'menu',
+  'menu groups Menu Bar positions in a submenu'
+)
+assert(
+  ['top', 'bottom', 'left', 'right'].every(position => defaultById[`style.bar.position.${position}`].action === `omarchy-bar position ${position}`),
+  'menu lists all Menu Bar positions under Position'
+)
+assertEqual(
+  defaultById['style.bar.transparency'].action,
+  'omarchy-bar transparent toggle',
+  'menu exposes Menu Bar transparency as a toggle'
+)
+assertEqual(
+  defaultById['trigger.hardware.laptop-display'].when,
+  'omarchy-hw-laptop',
+  'menu only shows Laptop Display on laptops'
+)
+assertEqual(
+  defaultById['trigger.hardware.mirror-display'].when,
+  'omarchy-hw-laptop',
+  'menu only shows Mirror Display on laptops'
+)
+assert(
   /font\.family: row\.iconFont\.length > 0 \? row\.iconFont : root\.fontFamily/.test(menuQml),
   'menu rows support per-icon font families'
 )
@@ -117,6 +175,10 @@ assert(
 assert(
   /function setActiveMenu\(id, pushHistory\)[\s\S]*root\.disarmPointer\(\)/.test(menuQml),
   'menu route changes disarm pointer selection'
+)
+assert(
+  /\(event\.key === Qt\.Key_Backspace \|\| event\.key === Qt\.Key_Left\) && !root\.filterText[\s\S]*root\.goBack\(\)/.test(menuQml),
+  'menu Left key follows empty-filter Backspace navigation'
 )
 assert(
   /PointerMoveGate\s*\{[\s\S]*id: pointerGate[\s\S]*referenceItem: card[\s\S]*\}/.test(menuQml),
