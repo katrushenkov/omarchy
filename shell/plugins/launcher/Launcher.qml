@@ -1,7 +1,6 @@
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import Quickshell.Widgets
 import QtQuick
 import qs.Commons
 import qs.Ui
@@ -80,11 +79,11 @@ Item {
       ? root.contentMargin * 2 + root.searchHeight + root.contentSpacing + requestedListHeight
       : 400
 
-    root.opened = true
     root.filterText = payload.query || ""
     root.selectedIndex = 0
     root.cursorActive = true
     root.disarmHover()
+    root.opened = true
     root.rebuildDisplay()
     // The shell may start before first-install packages have finished placing
     // their icons. Refresh here even when the desktop entry list did not change.
@@ -660,15 +659,18 @@ Item {
                 width: root.iconSlotWidth
                 height: parent.height
 
-                IconImage {
+                Image {
                   id: appIcon
                   anchors.centerIn: parent
-                  implicitSize: root.iconSize
                   width: root.iconSize
                   height: root.iconSize
+                  fillMode: Image.PreserveAspectFit
+                  // Decode at physical pixels: IconImage uses the logical size,
+                  // which leaves PNG icons upscaled and blurry on HiDPI displays.
+                  sourceSize.width: root.iconSize * Screen.devicePixelRatio
+                  sourceSize.height: root.iconSize * Screen.devicePixelRatio
                   source: root.iconSource(row.icon)
                   asynchronous: true
-                  mipmap: true
                 }
 
                 Text {
@@ -695,9 +697,14 @@ Item {
               }
 
               MouseArea {
+                id: mouseArea
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
+                onEntered: root.selectFromPointer(row.index, row, {
+                  x: mouseArea.mouseX,
+                  y: mouseArea.mouseY
+                })
                 onPositionChanged: function(mouse) {
                   root.selectFromPointer(row.index, row, mouse)
                 }

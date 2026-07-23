@@ -182,10 +182,6 @@ Item {
     return MenuModel.normalizeAliases(value)
   }
 
-  function normalizeKeywords(id, aliases, raw) {
-    return MenuModel.normalizeKeywords(id, aliases, raw)
-  }
-
   function normalizeItem(id, raw) {
     return MenuModel.normalizeItem(id, raw)
   }
@@ -222,14 +218,12 @@ Item {
     "fonts": {
       script: "current=$(omarchy-font-current 2>/dev/null); omarchy-font-list 2>/dev/null | while read -r f; do [[ -z $f ]] && continue; printf '%s\\t%s\\t%s\\n' \"$f\" \"$f\" \"$current\"; done",
       icon: "",
-      actionFor: function(value) { return "omarchy-font-set '" + value.replace(/'/g, "'\\''") + "'" },
-      keywordsFor: function(value) { return value + " typeface" }
+      actionFor: function(value) { return "omarchy-font-set '" + value.replace(/'/g, "'\\''") + "'" }
     },
     "power-profiles": {
       script: "current=$(powerprofilesctl get 2>/dev/null); omarchy-powerprofiles-list 2>/dev/null | while read -r p; do [[ -z $p ]] && continue; printf '%s\\t%s\\t%s\\n' \"$p\" \"$p\" \"$current\"; done",
       icon: "\udb81\udc0b",
-      actionFor: function(value) { return "omarchy-powerprofiles-set autodetect '" + value.replace(/'/g, "'\\''") + "'" },
-      keywordsFor: function(value) { return value + " power profile" }
+      actionFor: function(value) { return "omarchy-powerprofiles-set autodetect '" + value.replace(/'/g, "'\\''") + "'" }
     }
   })
 
@@ -274,8 +268,8 @@ Item {
         kind: "action",
         icon: (value === current) ? "✓" : (spec.icon || ""),
         label: label,
+        title: "",
         target: "",
-        keywords: spec.keywordsFor(value),
         description: "",
         action: spec.actionFor(value),
         provider: "",
@@ -375,8 +369,8 @@ Item {
     return MenuModel.termInSearchWords(term, text)
   }
 
-  function keywordTextMatches(query, text) {
-    return MenuModel.keywordTextMatches(query, text)
+  function descriptionTextMatches(query, text) {
+    return MenuModel.descriptionTextMatches(query, text)
   }
 
   function matchesQuery(entry, query) {
@@ -519,14 +513,15 @@ Item {
     root.rebuildDisplay()
   }
 
-  function setActiveMenu(id, pushHistory) {
+  function setActiveMenu(id, pushHistory, fromPointer) {
     if (!root.item(id)) id = "root"
     if (pushHistory && id !== root.activeMenu) root.navStack = root.navStack.concat([root.activeMenu])
     root.activeMenu = id
     root.filterText = ""
     root.selectedIndex = 0
     root.cursorActive = true
-    root.disarmPointer()
+    if (fromPointer) pointerGate.allowInitialSample()
+    else root.disarmPointer()
     root.rebuildDisplay()
     root.loadProviderForMenu(id)
   }
@@ -546,7 +541,7 @@ Item {
     return true
   }
 
-  function activateIndex(index) {
+  function activateIndex(index, fromPointer) {
     if (root.dmenuActive) {
       if (root.mode === "input") {
         root.applyDmenuSelection(root.filterText)
@@ -561,7 +556,7 @@ Item {
 
     var row = displayModel.get(index)
     if (row.kind === "menu" || row.kind === "link") {
-      root.setActiveMenu(row.target || row.itemId, true)
+      root.setActiveMenu(row.target || row.itemId, true, fromPointer)
     } else {
       root.applySelected(row.itemId, row.action)
     }
@@ -888,7 +883,7 @@ Item {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            text: root.filterText || (root.dmenuActive ? (root.dmenuPrompt + "…") : ((root.item(root.activeMenu) ? root.item(root.activeMenu).label : "Go") + "…"))
+            text: root.filterText || (root.dmenuActive ? (root.dmenuPrompt + "…") : ((root.item(root.activeMenu) ? (root.item(root.activeMenu).title || root.item(root.activeMenu).label) : "Go") + "…"))
             color: root.foreground
             opacity: root.filterText ? 1 : 0.58
             font.family: root.fontFamily
@@ -1045,13 +1040,17 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
+                onEntered: root.selectFromPointer(row.index, row, {
+                  x: mouseArea.mouseX,
+                  y: mouseArea.mouseY
+                })
                 onPositionChanged: function(mouse) {
                   root.selectFromPointer(row.index, row, mouse)
                 }
                 onClicked: {
                   root.cursorActive = true
                   root.selectedIndex = row.index
-                  root.activateIndex(row.index)
+                  root.activateIndex(row.index, true)
                 }
               }
             }
