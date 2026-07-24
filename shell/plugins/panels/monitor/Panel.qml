@@ -38,7 +38,15 @@ Panel {
   //                  j/k walks each row.
   // Mouse hover on a target updates root state via the components' `hovered`
   // signal so keyboard cursor and pointer share one highlight.
-  readonly property var scaleValues: ["1", "1.25", "1.6", "2", "3", "4"]
+  readonly property var scalePresets: ["1", "1.25", "1.6", "2", "3", "4"]
+  readonly property var scaleValues: {
+    for (var i = 0; i < displays.length; i++) {
+      var display = displays[i]
+      if (display && display.focused)
+        return Model.availableScales(scalePresets, display.width, display.height)
+    }
+    return scalePresets
+  }
   property string focusSection: "scale"
   property int selectedIndex: 0
   property bool cursorActive: false
@@ -246,6 +254,15 @@ Panel {
     return Model.normalizeScale(scale)
   }
 
+  function activeScaleIndex() {
+    for (var i = 0; i < displays.length; i++) {
+      var display = displays[i]
+      if (display && display.focused)
+        return Model.matchingScaleIndex(scaleValues, monitorScale, display.width, display.height)
+    }
+    return -1
+  }
+
   // Playful mood-name for a given brightness percent. Bands intentionally
   // span ~10–20 points so casual tweaks change the label, while small
   // nudges within one band don't.
@@ -333,6 +350,7 @@ Panel {
 
   onBrightnessAvailableChanged: clampCursor()
   onDisplaysChanged: clampCursor()
+  onScaleValuesChanged: clampCursor()
   onVisibleSectionsChanged: clampCursor()
 
   // Only poll while the panel is open; the bar glyph tracks monitor count via
@@ -520,8 +538,7 @@ Panel {
                   if (root.brightnessAvailable) {
                     return root.brightnessName(brightnessSlider.dragging ? brightnessSlider.liveValue : root.brightnessPercent).toUpperCase()
                   }
-                  var count = root.enabledDisplayCount
-                  return (count === 1 ? "1 display" : count + " displays").toUpperCase()
+                  return "FIXED BRIGHTNESS"
                 }
                 color: Qt.darker(root.bar.foreground, 1.4)
                 font.family: root.bar.fontFamily
@@ -772,7 +789,7 @@ Panel {
     verticalPadding: Style.spacing.controlPaddingY
     bordered: true
 
-    active: root.normalizeScale(root.monitorScale) === root.normalizeScale(scaleValue)
+    active: root.activeScaleIndex() === scaleIndex
     hasCursor: root.cursorActive && root.focusSection === "scale" && root.selectedIndex === scaleIndex
 
     onClicked: root.setScale(scaleValue)

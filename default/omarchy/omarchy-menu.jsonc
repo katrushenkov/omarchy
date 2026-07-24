@@ -14,7 +14,7 @@
   //   checked        shell condition; append ✓ when it succeeds
 
   // Root Menu
-  "apps": {"icon":"󰀻","label":"Apps","aliases":["app","applications"],"action":"omarchy-shell shell summon omarchy.launcher"},
+  "apps": {"icon":"󰀻","label":"Apps","aliases":["app","applications"],"provider":"apps"},
   "learn": {"icon":"󰧑","label":"Learn"},
   "trigger": {"icon":"󱓞","label":"Trigger"},
   "style": {"icon":"","label":"Style"},
@@ -54,7 +54,7 @@
   "trigger.capture.screenrecord.no-audio": {"icon":"","label":"With no audio","action":"omarchy-capture-screenrecording"},
   "trigger.capture.screenrecord.desktop-audio": {"icon":"","label":"With desktop audio","action":"omarchy-capture-screenrecording --with-desktop-audio"},
   "trigger.capture.screenrecord.microphone": {"icon":"","label":"With desktop + microphone audio","action":"omarchy-capture-screenrecording --with-desktop-audio --with-microphone-audio"},
-  "trigger.capture.screenrecord.webcam": {"icon":"","label":"With desktop + microphone audio + webcam","action":"omarchy-capture-screenrecording-with-webcam"},
+  "trigger.capture.screenrecord.webcam": {"icon":"","label":"With desktop + microphone audio + webcam","when":"omarchy-hw-webcam","action":"omarchy-capture-screenrecording-with-webcam"},
   "trigger.transcode": {"icon":"󰧸","label":"Transcode","action":"omarchy-transcode"},
   "trigger.share": {"icon":"","label":"Share","aliases":["share"]},
   "trigger.toggle": {"icon":"󰔎","label":"Toggle","aliases":["toggle","toggles"]},
@@ -120,7 +120,7 @@
   "setup.monitors": {"icon":"󰍹","label":"Monitors","action":"omarchy-launch-config-editor \"$HOME/.config/hypr/monitors.lua\""},
   "setup.keybindings": {"icon":"","label":"Keybindings","when":"[[ -f ~/.config/hypr/bindings.lua ]]","action":"omarchy-launch-config-editor \"$HOME/.config/hypr/bindings.lua\""},
   "setup.input": {"icon":"","label":"Input","when":"[[ -f ~/.config/hypr/input.lua ]]","action":"omarchy-launch-config-editor \"$HOME/.config/hypr/input.lua\""},
-  "setup.direct-boot": {"icon":"","label":"Direct Boot","action":"omarchy-launch-floating-terminal-with-presentation omarchy-config-direct-boot"},
+  "setup.direct-boot": {"icon":"","label":"Direct Boot","action":"omarchy-launch-floating-terminal-with-presentation omarchy-setup-direct-boot"},
   "setup.default": {"icon":"","label":"Defaults","aliases":["default","defaults"]},
   "setup.default.browser": {"icon":"","label":"Browser"},
   "setup.default.browser.chromium": {"icon":"","label":"Chromium","when":"omarchy-cmd-present chromium","checked":"[[ \"$(omarchy-default-browser)\" == \"chromium\" ]]","action":"omarchy-default-browser chromium"},
@@ -196,7 +196,7 @@
   "install.terminal.kitty": {"icon":"","label":"Kitty","action":"omarchy-launch-floating-terminal-with-presentation 'omarchy-install-terminal kitty'"},
   "install.ai.dictation": {"icon":"","label":"Dictation","action":"omarchy-launch-floating-terminal-with-presentation omarchy-voxtype-install"},
   "install.ai.lm-studio": {"icon":"󱚤","label":"LM Studio","action":"omarchy-install-app 'LM Studio' lmstudio-bin"},
-  "install.ai.ollama": {"icon":"󱚤","label":"Ollama","action":"if omarchy-cmd-present nvidia-smi; then ollama_pkg=ollama-cuda; elif omarchy-cmd-present rocminfo; then ollama_pkg=ollama-rocm; else ollama_pkg=ollama; fi; install Ollama \"$ollama_pkg\""},
+  "install.ai.ollama": {"icon":"󱚤","label":"Ollama","action":"if omarchy-cmd-present nvidia-smi; then ollama_pkg=ollama-cuda; elif omarchy-cmd-present rocminfo; then ollama_pkg=ollama-rocm; else ollama_pkg=ollama; fi; omarchy-install-app Ollama \"$ollama_pkg\""},
   "install.ai.crush": {"icon":"󱚤","label":"Crush","action":"omarchy-install-app Crush crush-bin"},
   "install.gaming.steam": {"icon":"","label":"Steam","action":"omarchy-launch-floating-terminal-with-presentation omarchy-install-gaming-steam"},
   "install.gaming.retroarch": {"icon":"󰯉","label":"RetroArch","action":"omarchy-launch-floating-terminal-with-presentation omarchy-install-gaming-retroarch"},

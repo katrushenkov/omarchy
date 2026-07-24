@@ -92,6 +92,8 @@ assertDeepEqual(
     kind: 'action',
     icon: '',
     iconFont: '',
+    appIcon: '',
+    appId: '',
     label: 'Theme picker',
     target: 'style.theme',
     detail: 'Style',
@@ -120,7 +122,7 @@ assert(
   'menu keeps Input as a direct config action'
 )
 assert(
-  defaultById['setup.direct-boot'].action.includes('omarchy-config-direct-boot'),
+  defaultById['setup.direct-boot'].action.includes('omarchy-setup-direct-boot'),
   'menu places Direct Boot directly under Setup'
 )
 assertEqual(
@@ -158,6 +160,11 @@ assertEqual(
   defaultById['trigger.hardware.mirror-display'].when,
   'omarchy-hw-laptop',
   'menu only shows Mirror Display on laptops'
+)
+assertEqual(
+  defaultById['trigger.capture.screenrecord.webcam'].when,
+  'omarchy-hw-webcam',
+  'menu only shows webcam screen recording when a webcam is available'
 )
 assert(
   /font\.family: row\.iconFont\.length > 0 \? row\.iconFont : root\.fontFamily/.test(menuQml),
