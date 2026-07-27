@@ -198,7 +198,8 @@ appropriate helper or privilege prompt. Migrations must be idempotent;
 machine-wide repairs should no-op when another user already applied them.
 
 Each graphical user has `omarchy-migrate-notify.service`, started once per login
-through `WantedBy=graphical-session.target`. The package also ships
+through `WantedBy=graphical-session.target` and ordered after that target so
+notification actions can safely launch through UWSM. The package also ships
 `omarchy-update-user-notify.service` as a symlink onto it, so users enabled
 under the old unit name keep working before they reach migration `1785095882`.
 It runs `omarchy-migrate-notify` as
@@ -227,7 +228,8 @@ systemd instance:
   Voxtype post-update hook.
 - `install/user/first-run/enable-user-units.sh` — `systemctl --user enable`
   the shipped user units (`bt-agent`, `omarchy-sleep-lock`,
-  `omarchy-recover-internal-monitor`, `omarchy-migrate-notify.service`).
+  `omarchy-recover-internal-monitor`, `omarchy-migrate-notify.service`,
+  `omarchy-fcitx5.service`).
   Done here, not at finalize, because
   the user manager isn't reachable from the ISO chroot; `ConditionPath*`
   in the unit files keeps services inert when they don't apply.

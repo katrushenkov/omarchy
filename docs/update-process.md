@@ -150,7 +150,8 @@ sudo pacman -Syu
   ├─ pre-transaction guard aborts and tells the user to run omarchy update
   └─ if explicitly bypassed, upgrades omarchy and related packages
   └─ at that user's next login
-       ├─ omarchy-migrate-notify.service starts with graphical-session.target
+       ├─ graphical-session.target starts
+       ├─ omarchy-migrate-notify.service starts after it
        ├─ omarchy-migrate-notify checks omarchy-migrate --pending
        ├─ if this user has missing migration state, show notification
        └─ click opens terminal: omarchy-migrate
@@ -161,6 +162,28 @@ directory cannot distinguish a bypassed `pacman -Syu` from the package
 transaction inside a normal `omarchy update`, so it fired notifications for
 migrations that `omarchy-migrate` was about to apply in the visible update
 terminal. The retired unit was `omarchy-update-user-notify.path`.
+
+Retiring that watcher through a migration cannot come in time for the update
+that retires it: pacman writes the migration directory, the watcher fires, and
+only then does `omarchy-migrate` reach the migration that stops it. So the
+notifier also refuses to run while `omarchy update` holds its
+`$XDG_RUNTIME_DIR/omarchy-update.lock`, which covers the stale watcher and any
+trigger added later — during an update, every pending migration is by
+definition already being applied a step away. It checks again after waiting for
+the notification server, since that wait is long enough for an update to start
+underneath it.
+
+The notifier reads only its own user's runtime directory, never the `/tmp` path
+`omarchy-update` falls back to when `XDG_RUNTIME_DIR` is unset. A shared lock
+file belongs to whoever created it first, so honouring it would let one user
+silence another user's notification. Missing an update and showing a redundant
+toast is the better failure.
+
+Suppression is why `omarchy-update` starts its sleep inhibitor with the lock
+descriptor closed. That inhibitor outlives the step that starts it, so an update
+killed before `restore_update_inhibitors` would otherwise leave it holding the
+flock indefinitely — blocking later updates and, now that the notifier reads the
+same lock, silencing migration notifications at every login.
 
 Fallbacks:
 
@@ -173,6 +196,9 @@ Fallbacks:
   migration that repoints it only runs for users who run an update — the
   opposite of who the notifier is for. The alias can be dropped once installs
   have run migration `1785095882`.
+- The notifier is ordered after `graphical-session.target`, so an action that
+  launches through `uwsm-app` cannot block the target that gates UWSM's app
+  daemon.
 - The notifier waits for a live notification server before sending, because
   `graphical-session.target` can be reached before the shell claims
   `org.freedesktop.Notifications`.
