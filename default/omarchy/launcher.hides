@@ -8,6 +8,7 @@ dropbox
 electron34
 electron36
 electron37
+exec:happ
 fcitx5-configtool
 fcitx5-wayland-launcher
 foot-server
@@ -31,6 +32,7 @@ org.fcitx.fcitx5-config-qt
 org.fcitx.fcitx5-migrator
 org.fcitx.fcitx5-qt5-gui-wrapper
 org.fcitx.fcitx5-qt6-gui-wrapper
+org.telegram.desktop.desktop
 qv4l2
 qvidcap
 uuctl

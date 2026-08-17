@@ -42,7 +42,7 @@ theme_dir="/usr/share/plymouth/themes/omarchy"
 staging_dir=$(mktemp -d)
 trap 'rm -rf "$staging_dir"' EXIT
 
-find $OMARCHY_PATH/default/plymouth -maxdepth 1 -type f -exec cp -t "$staging_dir/" {} +
+find "$OMARCHY_PATH/default/plymouth" -maxdepth 1 -type f -exec cp -t "$staging_dir/" {} +
 cp "$logo_path" "$staging_dir/logo.png"
 
 sed -i \
@@ -54,7 +54,7 @@ for asset in bullet.png entry.png lock.png progress_bar.png; do
   magick "$staging_dir/$asset" -channel RGB +level-colors "#$text_hex","#$text_hex" "$staging_dir/$asset"
 done
 
-sudo cp -a "$staging_dir/." "$theme_dir/"
+sudo cp -a --no-preserve=mode,ownership "$staging_dir/." "$theme_dir/"
 sudo plymouth-set-default-theme omarchy
 
 if omarchy-cmd-present limine-mkinitcpio; then

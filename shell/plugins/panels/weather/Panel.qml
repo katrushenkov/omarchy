@@ -11,22 +11,38 @@ Panel {
   ipcTarget: "omarchy.weather"
   manageIpc: false
 
-  property string omarchyPath: Quickshell.env("OMARCHY_PATH")
   property var anchorItem: null
   property bool openedFromHotkey: false
+
+  // The bar tracks the widget mounted in its slot — BarWidget.qml — not this
+  // nested panel. Everything the bar identifies a panel by has to be that
+  // widget: the popout coordinator (and with it the open-panel dot under the
+  // pill) compares against `slot.activeItem`, and switchPanelFrom looks the
+  // slot up the same way.
+  property var hostWidget: null
+  readonly property var barIdentity: hostWidget || root
 
   function open() {
     openedFromHotkey = false
     setCenterHoverRevealSuppressed(false)
     root.controller.show()
+    locationFile.reload()
     root.refresh()
   }
 
   function openFromHotkey() {
     openedFromHotkey = true
-    setCenterHoverRevealSuppressed(true)
     root.controller.show()
+    locationFile.reload()
     root.refresh()
+    // Set after showing, not before: showing hands the popout coordinator
+    // over, which closes whichever panel was open, and that close clears the
+    // shared flag. Deferring means the panel taking over always wins, while
+    // a handoff to a panel that does not manage the flag still leaves it
+    // cleared rather than stuck on.
+    Qt.callLater(function() {
+      if (root.opened) setCenterHoverRevealSuppressed(true)
+    })
   }
 
   function close() {
@@ -38,6 +54,12 @@ Panel {
   function toggle() {
     if (root.opened) root.close()
     else root.openFromHotkey()
+  }
+
+  function switchPanel(direction) {
+    if (root.bar && typeof root.bar.switchPanelFrom === "function")
+      return root.bar.switchPanelFrom(root.barIdentity, direction)
+    return false
   }
 
   function setCenterHoverRevealSuppressed(value) {
@@ -58,14 +80,13 @@ Panel {
   readonly property string configuredLocation: configuredLocationState.name
   readonly property string locationQuery: Model.wttrLocationQuery(configuredLocationState.name, configuredLocationState.latitude, configuredLocationState.longitude)
 
-  // A location change makes the previous report misleading (the old city's
-  // numbers under the new label), so drop it, abort any in-flight fetch for
-  // the old location, and refetch from scratch.
+  // Keep the previous report visible while the new location loads. The
+  // editor remains open with a spinner, so stale data is never presented
+  // under the newly configured location label.
   onLocationQueryChanged: {
-    report = null
-    dailyForecastReport = null
-    wttrLocation = ""
+    if (savingLocation) savingLocationQueryStarted = true
     forecastRetries = 0
+    dailyForecastRetries = 0
     forecastProc.running = false
     dailyForecastProc.running = false
     Qt.callLater(refresh)
@@ -91,27 +112,25 @@ Panel {
   }
 
   property int forecastRetries: 0
+  property int dailyForecastRetries: 0
 
   // Click-to-edit state for the location label.
   property bool editingLocation: false
+  property bool savingLocation: false
+  property bool savingLocationQueryStarted: false
   property var locationSuggestions: []
   property int suggestionIndex: 0
   property string geocodePendingQuery: ""
   property string geocodeActiveQuery: ""
 
-  // Bar pill state. Polled locally; populated by weatherProc below.
+  // Shared hero/bar icon state, updated with each successful weather response.
   property string label: ""
-  property string klass: ""
-
-  function updateWeather(raw) {
-    var data = Model.parseWeatherStatus(raw)
-    label = data.label
-    klass = data.klass
-  }
 
   // wttr's current conditions when available; open-meteo's (bundled with the
   // much faster daily forecast fetch) fill the hero while wttr is in flight.
-  readonly property var current: (report && report.current_condition && report.current_condition[0]) ? report.current_condition[0] : Model.openMeteoCurrentCondition(dailyForecastReport)
+  readonly property bool hasConfiguredCoordinates: !isNaN(parseFloat(String(configuredLocationState.latitude))) && !isNaN(parseFloat(String(configuredLocationState.longitude)))
+  readonly property var openMeteoCurrent: Model.openMeteoCurrentCondition(dailyForecastReport)
+  readonly property var current: (hasConfiguredCoordinates && openMeteoCurrent) ? openMeteoCurrent : ((report && report.current_condition && report.current_condition[0]) ? report.current_condition[0] : openMeteoCurrent)
   readonly property var areaInfo: report && report.nearest_area && report.nearest_area[0] ? report.nearest_area[0] : null
   readonly property var forecastDays: buildForecastDays()
   readonly property string reportCountry: areaInfo && areaInfo.country && areaInfo.country[0] ? areaInfo.country[0].value : ""
@@ -129,6 +148,11 @@ Panel {
   readonly property string reportHumidity:  current ? (current.humidity + "%") : ""
 
   function refresh() {
+    // Each full refresh cycle gets a fresh retry budget, so an earlier
+    // exhausted round (e.g. waking with the network still down) doesn't
+    // starve retries for the rest of the session.
+    forecastRetries = 0
+    dailyForecastRetries = 0
     if (!forecastProc.running) forecastProc.running = true
     if (root.locationQuery === "" && !locationProc.running) locationProc.running = true
     // With stored coordinates this fetches open-meteo right away — no need
@@ -154,7 +178,7 @@ Panel {
       + "?latitude=" + encodeURIComponent(String(lat))
       + "&longitude=" + encodeURIComponent(String(lon))
       + "&daily=weather_code,temperature_2m_max,temperature_2m_min"
-      + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m"
+      + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,is_day"
       + "&forecast_days=4"
       + "&timezone=auto"
     dailyForecastProc.command = ["curl", "-fsS", "--max-time", "5", url]
@@ -166,6 +190,8 @@ Panel {
   //      the module's shell.json entry. An empty commit returns to auto.
   function startEditingLocation() {
     editingLocation = true
+    savingLocation = false
+    savingLocationQueryStarted = false
     locationSuggestions = []
     suggestionIndex = 0
     Qt.callLater(function() {
@@ -177,17 +203,27 @@ Panel {
 
   function cancelEditingLocation() {
     editingLocation = false
+    savingLocation = false
+    savingLocationQueryStarted = false
     locationSuggestions = []
     geocodeDebounce.stop()
     Qt.callLater(function() { if (keyCatcher) keyCatcher.forceActiveFocus() })
   }
 
   function commitLocation() {
-    if (locationField.text.trim() === "") {
+    var location = Model.locationCommit(locationField.text, locationSuggestions, suggestionIndex)
+    if (location.name === "") {
       clearLocation()
       return
     }
-    pickSuggestion(locationSuggestions[Math.min(suggestionIndex, locationSuggestions.length - 1)])
+    savingLocation = true
+    savingLocationQueryStarted = false
+    configuredLocationState = {
+      name: location.name,
+      latitude: location.latitude,
+      longitude: location.longitude
+    }
+    persistLocation(location.name, location.latitude, location.longitude)
   }
 
   function clearLocation() {
@@ -198,15 +234,28 @@ Panel {
 
   function pickSuggestion(suggestion) {
     if (!suggestion) return
+    savingLocation = true
+    savingLocationQueryStarted = false
+    configuredLocationState = {
+      name: suggestion.name,
+      latitude: suggestion.latitude,
+      longitude: suggestion.longitude
+    }
     persistLocation(suggestion.name, suggestion.latitude, suggestion.longitude)
-    cancelEditingLocation()
+  }
+
+  function finishSavingLocation() {
+    if (savingLocation && savingLocationQueryStarted) cancelEditingLocation()
   }
 
   function persistLocation(name, latitude, longitude) {
-    if (name)
-      Quickshell.execDetached(["omarchy-weather-location", "--set", name, latitude + "," + longitude])
+    if (name && latitude !== null && longitude !== null)
+      locationSaveProc.command = ["omarchy-weather-location", "--set", name, latitude + "," + longitude]
+    else if (name)
+      locationSaveProc.command = ["omarchy-weather-location", "--set", name]
     else
-      Quickshell.execDetached(["omarchy-weather-location", "--clear"])
+      locationSaveProc.command = ["omarchy-weather-location", "--clear"]
+    locationSaveProc.running = true
   }
 
   // Debounced geocoding. Only one curl runs at a time; if the query moved on
@@ -293,7 +342,11 @@ Panel {
         try {
           var parsed = JSON.parse(raw)
           root.report = parsed
+          if (!root.hasConfiguredCoordinates)
+            root.label = Model.provisionalCurrentIcon(parsed.current_condition && parsed.current_condition[0], root.label)
           root.forecastRetries = 0
+          if (Model.weatherResponseCompletesSave(root.hasConfiguredCoordinates, "wttr"))
+            root.finishSavingLocation()
           // Stored coordinates already drove the fast open-meteo fetch from
           // refresh(); only auto-detect needs the area wttr reported.
           if (isNaN(parseFloat(String(root.configuredLocationState.latitude))))
@@ -320,17 +373,42 @@ Panel {
     onTriggered: if (!forecastProc.running) forecastProc.running = true
   }
 
+  // With configured coordinates this fetch is the only thing that updates the
+  // bar icon, so a dropped response (e.g. waking before the network is back)
+  // must retry rather than wait out the refresh timer with a stale icon.
+  function scheduleDailyForecastRetry() {
+    if (dailyForecastRetries >= 3) return
+    dailyForecastRetries++
+    dailyForecastRetryTimer.restart()
+  }
+
+  Timer {
+    id: dailyForecastRetryTimer
+    interval: 2500
+    onTriggered: root.refreshDailyForecast(null)
+  }
+
   Process {
     id: dailyForecastProc
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: {
         var raw = String(text || "").trim()
-        if (!raw) return
+        if (!raw) {
+          root.scheduleDailyForecastRetry()
+          return
+        }
         try {
-          root.dailyForecastReport = JSON.parse(raw)
+          var parsed = JSON.parse(raw)
+          var parsedCurrent = Model.openMeteoCurrentCondition(parsed)
+          root.dailyForecastReport = parsed
+          root.label = Model.currentIcon(parsedCurrent, root.label)
+          root.dailyForecastRetries = 0
+          if (Model.weatherResponseCompletesSave(root.hasConfiguredCoordinates, "open-meteo"))
+            root.finishSavingLocation()
         } catch (e) {
-          // Keep last-good daily forecast on parse failure.
+          // Keep last-good daily forecast visible, but try again shortly.
+          root.scheduleDailyForecastRetry()
         }
       }
     }
@@ -352,6 +430,25 @@ Panel {
     id: geocodeDebounce
     interval: 300
     onTriggered: root.requestGeocode()
+  }
+
+  Process {
+    id: locationSaveProc
+    onExited: function(exitCode) {
+      if (exitCode !== 0 || !root.savingLocation) return
+
+      // FileView handles changed locations. Explicitly refresh here too so
+      // saving the already-active location cannot strand the spinner.
+      locationFile.reload()
+      if (!root.savingLocationQueryStarted) {
+        root.savingLocationQueryStarted = true
+        root.forecastRetries = 0
+        root.dailyForecastRetries = 0
+        forecastProc.running = false
+        dailyForecastProc.running = false
+        Qt.callLater(root.refresh)
+      }
+    }
   }
 
   Process {
@@ -390,7 +487,7 @@ Panel {
   KeyboardPanel {
     id: panel
     anchorItem: root.anchorItem
-    owner: root
+    owner: root.barIdentity
     bar: root.bar
     open: root.opened
     centerOnBar: true
@@ -402,6 +499,7 @@ Panel {
       id: keyCatcher
       anchors.fill: parent
       blocked: root.editingLocation
+      onReturnRequested: root.startEditingLocation()
       onCloseRequested: root.close()
       onTabRequested: function(direction) { root.switchPanel(direction) }
 
@@ -470,6 +568,7 @@ Panel {
 
         Column {
           id: heroRight
+          width: weatherStats.implicitWidth
           anchors.right: parent.right
           anchors.rightMargin: Style.space(20)
           anchors.verticalCenter: parent.verticalCenter
@@ -510,11 +609,12 @@ Panel {
             TextField {
               id: locationField
               width: Style.space(190)
+              enabled: !root.savingLocation
               placeholderText: "Search city"
               foreground: root.bar.foreground
               font.family: root.bar.fontFamily
 
-              onTextChanged: if (root.editingLocation) geocodeDebounce.restart()
+              onTextChanged: if (root.editingLocation && !root.savingLocation) geocodeDebounce.restart()
 
               Keys.onPressed: function(event) {
                 if (event.key === Qt.Key_Escape) {
@@ -533,34 +633,43 @@ Panel {
               }
             }
 
-            // Clear back to IP auto-detect. Committing an empty field does
-            // the same for keyboard users.
+            // Clear back to IP auto-detect. While a committed location is
+            // loading, this same compact affordance becomes a spinner.
             Rectangle {
               width: Style.space(18)
               height: Style.space(18)
               anchors.verticalCenter: parent.verticalCenter
               radius: Math.min(4, Style.cornerRadius)
-              color: clearLocationArea.containsMouse ? Style.hoverFillFor(root.bar.foreground, Color.accent) : "transparent"
+              color: !root.savingLocation && clearLocationArea.containsMouse ? Style.hoverFillFor(root.bar.foreground, Color.accent) : "transparent"
 
               Text {
                 anchors.centerIn: parent
-                text: "✕"
+                text: root.savingLocation ? "󰦖" : "✕"
                 font.family: root.bar.fontFamily
                 color: Qt.darker(root.bar.foreground, 1.4)
                 font.pixelSize: Style.font.bodySmall
+
+                RotationAnimator on rotation {
+                  running: root.savingLocation
+                  from: 0; to: 360
+                  duration: 800
+                  loops: Animation.Infinite
+                }
               }
 
               MouseArea {
                 id: clearLocationArea
                 anchors.fill: parent
+                enabled: !root.savingLocation
                 hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
+                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
                 onClicked: root.clearLocation()
               }
             }
           }
 
           Row {
+            id: weatherStats
             visible: !!root.current
             spacing: Style.space(36)
 
@@ -620,7 +729,7 @@ Panel {
 
       // ---- Geocoding suggestions while the location is being edited.
       Column {
-        visible: root.editingLocation && root.locationSuggestions.length > 0
+        visible: root.editingLocation && !root.savingLocation && root.locationSuggestions.length > 0
         width: parent.width
         spacing: 0
 
@@ -753,21 +862,4 @@ Panel {
   }
   }
 
-  // Poll the weather pill text/class every minute. Local to this widget.
-  Process {
-    id: weatherProc
-    command: ["bash", "-lc", Util.shellQuote(root.omarchyPath + "/shell/plugins/panels/weather/status.sh")]
-    stdout: StdioCollector {
-      waitForEnd: true
-      onStreamFinished: root.updateWeather(text)
-    }
-  }
-
-  Timer {
-    interval: 60000
-    running: true
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: if (!weatherProc.running) weatherProc.running = true
-  }
 }

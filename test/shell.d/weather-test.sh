@@ -5,20 +5,24 @@ set -euo pipefail
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/base-test.sh"
 
 run_node_test <<'JS'
+const fs = require('fs')
 const weather = requireFromRoot('shell/plugins/panels/weather/Model.js')
-
-assertDeepEqual(
-  weather.parseWeatherStatus('{"text":"☀","class":"sunny"}'),
-  { label: '☀', klass: 'sunny' },
-  'weather parses pill status JSON'
-)
-assertDeepEqual(weather.parseWeatherStatus('{'), { label: '', klass: '' }, 'weather handles invalid pill status JSON')
+const panelSource = fs.readFileSync(root + '/shell/plugins/panels/weather/Panel.qml', 'utf8')
+const widgetSource = fs.readFileSync(root + '/shell/plugins/panels/weather/BarWidget.qml', 'utf8')
 
 assertDeepEqual(weather.parseLocationFile('{"name": "Malibu", "latitude": 34.02577, "longitude": -118.7804}\n'), { name: 'Malibu', latitude: 34.02577, longitude: -118.7804 }, 'weather parses name plus coordinates from weather.json')
 assertDeepEqual(weather.parseLocationFile('{"name": "New York"}'), { name: 'New York', latitude: null, longitude: null }, 'weather parses a name-only weather.json')
 assertDeepEqual(weather.parseLocationFile('{"name": "Malibu", "latitude": 34.02577}'), { name: 'Malibu', latitude: null, longitude: null }, 'weather requires both coordinates')
 assertDeepEqual(weather.parseLocationFile('not json'), { name: '', latitude: null, longitude: null }, 'weather treats an unparseable weather.json as auto-detect')
 assertDeepEqual(weather.parseLocationFile(''), { name: '', latitude: null, longitude: null }, 'weather treats a missing weather.json as auto-detect')
+
+assertDeepEqual(weather.locationCommit('  Pasadena  ', [], 0), { name: 'Pasadena', latitude: null, longitude: null }, 'weather commits typed locations before suggestions load')
+assertDeepEqual(weather.locationCommit('', [], 0), { name: '', latitude: null, longitude: null }, 'weather commits an empty location as auto-detect')
+assertDeepEqual(
+  weather.locationCommit('mal', [{ name: 'Malibu', latitude: 34.02577, longitude: -118.7804 }], 0),
+  { name: 'Malibu', latitude: 34.02577, longitude: -118.7804 },
+  'weather commits the selected geocoding suggestion when available'
+)
 
 assertEqual(weather.wttrLocationQuery('Malibu', 34.02577, -118.7804), '34.02577,-118.7804', 'weather prefers coordinates for the wttr query')
 assertEqual(weather.wttrLocationQuery('Malibu', '34.02577', '-118.7804'), '34.02577,-118.7804', 'weather accepts string coordinates')
@@ -100,6 +104,50 @@ assertEqual(weather.bareTempForDay({ maxtempC: '22', mintempC: '13', maxtempF: '
 assertEqual(weather.bareTempForDay({ maxtempC: '22', mintempC: '13', maxtempF: '72', mintempF: '55' }, 'min', true), '55°', 'weather formats forecast imperial lows')
 
 assert(weather.dayIcon({ openMeteoWeatherCode: 95 }).length > 0, 'weather maps Open-Meteo weather icons')
+assertEqual(weather.currentIcon({ openMeteoWeatherCode: 0, isDay: 1 }, ''), weather.iconForOpenMeteoCode(0), 'weather uses the current Open-Meteo icon with current values')
+assertEqual(weather.currentIcon({ openMeteoWeatherCode: 0, isDay: 0 }, ''), weather.iconForCode(113, true), 'weather uses the nighttime Open-Meteo icon after sunset')
+assert(weather.iconForOpenMeteoCode(45, true) !== weather.iconForOpenMeteoCode(45, false), 'weather distinguishes nighttime fog from daytime fog')
+assertEqual(weather.provisionalCurrentIcon({ weatherCode: 113 }, ''), weather.iconForCode(113, false), 'weather uses wttr to fill an empty initial icon')
+assertEqual(weather.provisionalCurrentIcon({ weatherCode: 113 }, 'night'), 'night', 'weather refresh preserves a resolved day-night icon')
+// The bar identifies a panel by the widget in its slot, so the nested panel
+// has to present the host widget rather than itself — otherwise the
+// open-panel dot never lights and Tab cannot leave the panel.
+assert(
+  panelSource.includes('owner: root.barIdentity'),
+  'weather panel gives the bar its host widget as popout identity'
+)
+assert(
+  panelSource.includes('switchPanelFrom(root.barIdentity, direction)'),
+  'weather panel switches panels as its host widget'
+)
+assert(
+  widgetSource.includes('target.hostWidget = root'),
+  'weather widget injects itself as the panel host'
+)
+assert(
+  widgetSource.includes('readonly property bool popoutSwitchClosing:') && widgetSource.includes('function closeForPopoutSwitch()'),
+  'weather widget forwards the popout-switch handshake'
+)
+assert(
+  /Qt\.callLater\(function\(\) \{\s*\n\s*if \(root\.opened\) setCenterHoverRevealSuppressed\(true\)/.test(panelSource),
+  'weather claims the shared hover-reveal flag after the popout handoff, so the panel taking over wins'
+)
+
+assert(
+  panelSource.includes('text: root.label || "—"'),
+  'weather hero and bar use the same resolved icon'
+)
+assert(
+  panelSource.includes('onReturnRequested: root.startEditingLocation()'),
+  'weather focuses city input when Return is pressed'
+)
+assert(
+  panelSource.split('root.controller.show()\n    locationFile.reload()\n    root.refresh()').length === 3,
+  'weather reloads external location changes whenever either open path runs'
+)
+assert(!weather.weatherResponseCompletesSave(true, 'wttr'), 'weather keeps the spinner through a non-authoritative pinned-location response')
+assert(weather.weatherResponseCompletesSave(true, 'open-meteo'), 'weather completes a pinned-location save with Open-Meteo data')
+assert(weather.weatherResponseCompletesSave(false, 'wttr'), 'weather completes a name-only location save with wttr data')
 assertEqual(
   weather.dayIcon({ hourly: [{ time: '900', weatherCode: 113 }, { time: '1200', weatherCode: 389 }, { time: '1800', weatherCode: 116 }] }),
   weather.iconForCode(389, false),

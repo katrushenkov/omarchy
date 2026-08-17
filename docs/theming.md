@@ -6,6 +6,13 @@ Omarchy themes live under `themes/<name>/` in the source tree (installed at
 `colors.toml`; Omarchy generates the active theme files from
 `default/themed/*.tpl` when `omarchy-theme-set <name>` runs.
 
+Beyond `colors.toml` and hand-written config overrides, a theme can ship
+`backgrounds/` (users overlay their own via
+`~/.config/omarchy/backgrounds/<name>/`; the active image is the
+`~/.local/state/omarchy/current/background` symlink), `preview.png` and
+`preview-unlock.png` for the theme switcher, `icons.theme`, `keyboard.rgb`,
+`unlock.png`, and a `light.mode` marker file.
+
 ## Theme activation flow
 
 `omarchy-theme-set <name>` builds a clean staging directory at
@@ -28,38 +35,76 @@ User templates in `~/.config/omarchy/themed/*.tpl` are processed before the
 built-in templates. If a user template has the same output filename as a
 built-in template, the built-in output is skipped.
 
+After activation, `omarchy-theme-set` fires the `theme-set` hook
+(`~/.config/omarchy/hooks/theme-set*`, theme name in `$1`) and dispatches a
+parallel retint of running apps — terminals, Hyprland, btop, browser, editors,
+and the rest of the `post_theme_commands` list in `bin/omarchy-theme-set`.
+Making a new app follow theme changes means adding its restart/retint command
+to that list. Runs serialize on a `flock`, so scripted theme changes queue
+instead of racing.
+
 ## `colors.toml`
 
-`colors.toml` provides the palette keys used by templates. Common keys are:
+`colors.toml` provides the palette keys used by templates. Keys are grouped
+semantic-first: accent/selection/muted, then the backgrounds, then the
+foregrounds, then the named colors:
 
 ```toml
-bg                   = "#1a1b26"
-fg                   = "#a9b1d6"
-accent               = "#7aa2f7"
-selection            = "#292e42"
-red                  = "#f7768e"
-blue                 = "#7aa2f7"
+mode = "dark"
+
+accent = "#7aa2f7"
+selection = "#292e42"
+muted = "#414868"
+
+background = "#1a1b26"
+dark_background = "#13141c"
+darker_background = "#0e0e14"
+lighter_background = "#24283b"
+
+foreground = "#a9b1d6"
+dark_foreground = "#565f89"
+light_foreground = "#b4bee6"
+bright_foreground = "#c0caf5"
+
+red = "#f7768e"
+blue = "#7aa2f7"
 ```
 
 Any key can be referenced from a template with `{{ key }}`. The foundational
 shell palette is loaded from:
 
-- `fg` — primary readable text color
-- `bg` — primary background color
+- `foreground` — primary readable text color
+- `background` — primary background color
 - `accent` — preferred when present; otherwise some places fall back to
   `color4`
-- `urgent` / `red` / `color1`
+- `muted` — de-emphasized elements (comments, placeholders, dividers); also
+  serves as ANSI `color8`
+- `red` / `color1` — populate the shell's urgent role; there is no `urgent`
+  palette key (one defined in `colors.toml` is ignored)
 
-For older user themes and templates, `foreground` aliases to `fg` and
-`background` aliases to `bg`.
+Themes and user templates using the legacy short names remain supported.
+Canonical names take precedence when both forms are defined, and resolved
+canonical values are also exposed through their legacy names:
 
-The neutral ramp is centered on `bg -> bright_fg`. Dark themes should read from
-darkest to lightest; light themes should read from lightest to darkest. Terminal
-and editor cursors use `bright_fg`; there is no separate cursor palette key.
-`selection` is the text-selection background stop in that ramp; Omarchy derives
-`selection_background = selection` and `selection_foreground = bright_fg`. Use
-`omarchy dev theme-preview [theme]` to inspect that ramp, including `dark_bg`,
-`darker_bg`, and a selected-text sample.
+| Canonical | Legacy |
+|-----------|--------|
+| `background` | `bg` |
+| `dark_background` | `dark_bg` |
+| `darker_background` | `darker_bg` |
+| `lighter_background` | `lighter_bg` |
+| `foreground` | `fg` |
+| `dark_foreground` | `dark_fg` |
+| `light_foreground` | `light_fg` |
+| `bright_foreground` | `bright_fg` |
+
+The neutral ramp is centered on `background -> bright_foreground`. Dark themes
+should read from darkest to lightest; light themes should read from lightest to
+darkest. Terminal and editor cursors use `bright_foreground`; there is no
+separate cursor palette key. `selection` is the text-selection background stop
+in that ramp; Omarchy derives `selection_background = selection` and
+`selection_foreground = bright_foreground`. Use
+`omarchy dev theme-preview [theme]` to inspect that ramp, including
+`dark_background`, `darker_background`, and a selected-text sample.
 
 ## Template placeholders
 
@@ -82,8 +127,8 @@ For a color key such as `accent = "#7aa2f7"`:
 percentage:
 
 ```text
-{{ mix bg fg 15% }}
-{{ mix_strip bg accent 0.35 }}
+{{ mix background foreground 15% }}
+{{ mix_strip background accent 0.35 }}
 {{ mix_rgb color0 color7 50 }}
 ```
 
@@ -275,10 +320,11 @@ BorderSurface {
 }
 ```
 
-Use `Border.surfaceSpec(section, token, fallbackColor, fallbackWidth)` for
-shell theme tokens, `Border.controlSpec(state, foreground, accent)` for shared
-controls, and `Border.flat(color, width)` for a deliberate local border that
-should not be overridden by the active theme. `Color.<section>.border` is the
+Use `Border.surfaceSpec(section, token, fallbackColor, fallbackWidth, alphaKey)`
+for shell theme tokens (the optional `alphaKey` names the alpha token, e.g.
+`"border-alpha"`), `Border.controlSpec(state, foreground, accent, urgent)` for
+shared controls, and `Border.flat(color, width)` for a deliberate local border
+that should not be overridden by the active theme. `Color.<section>.border` is the
 flat first-stop color for consumers that cannot render full border specs.
 
 ## Hyprland templates

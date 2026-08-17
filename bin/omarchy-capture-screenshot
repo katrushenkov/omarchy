@@ -29,22 +29,30 @@ for arg in "$@"; do
 done
 set -- "${ARGS[@]}"
 
-open_editor() {
-  local filepath="$1"
-  "$SCREENSHOT_EDITOR" "$filepath"
-}
-
 MODE="${1:-smart}"
 PROCESSING="${2:-slurp}"
 
 # The picker leaves the screen freeze running (PID on its first output line)
 # so grim captures the frozen overlay rather than live content shifting
 # during teardown.
-cleanup_freeze() {
-  [[ -n $FREEZE_PID ]] && kill $FREEZE_PID 2>/dev/null
-}
-trap cleanup_freeze EXIT
+#
+# Software-composited cursors (Hyprland's fallback on GPUs without working
+# hardware cursors) are baked into the frames grim captures, so force
+# hardware cursors until after grim runs and restore the setting on exit.
+NO_HW_CURSORS=$(hyprctl getoption cursor:no_hardware_cursors -j | jq '.int')
 
+set_no_hw_cursors() {
+  hyprctl eval "hl.config({ cursor = { no_hardware_cursors = $1 } })" &>/dev/null ||
+    hyprctl keyword cursor:no_hardware_cursors "$1" &>/dev/null
+}
+
+cleanup() {
+  [[ -n $FREEZE_PID ]] && kill $FREEZE_PID 2>/dev/null
+  set_no_hw_cursors "$NO_HW_CURSORS"
+}
+trap cleanup EXIT
+
+set_no_hw_cursors 0
 { read -r FREEZE_PID; read -r SELECTION; } < <(omarchy-capture-region "$MODE" --keep-freeze)
 
 [[ -z $SELECTION ]] && exit 0
@@ -58,11 +66,11 @@ case "$PROCESSING" in
     echo "$FILEPATH"
     wl-copy --type image/png <"$FILEPATH"
 
-    (
-      if [[ -n $(omarchy-notification-send "Screenshot saved to clipboard and file" "Edit with Super + Alt + , (or click this)" --image "$FILEPATH" -a) ]]; then
-        open_editor "$FILEPATH"
-      fi
-    ) >/dev/null 2>&1 &
+    # Best-effort: the screenshot is already saved and on the clipboard, so a
+    # notification outage must not report the capture itself as failed.
+    omarchy-notification-send "Screenshot saved to clipboard and file" "Edit with Super + Alt + , (or click this)" \
+      --image "$FILEPATH" \
+      --exec "$(printf '%q %q' "$SCREENSHOT_EDITOR" "$FILEPATH")" || true
     ;;
   copy)
     grim -g "$SELECTION" - | wl-copy --type image/png

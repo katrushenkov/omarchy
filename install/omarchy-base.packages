@@ -20,11 +20,12 @@ cups
 cups-browsed
 cups-filters
 cups-pdf
+ddcutil
 docker
 docker-buildx
 docker-compose
 dosfstools
-dotnet-runtime-9.0
+dotnet-runtime
 dua-cli
 evince
 exfatprogs
@@ -41,7 +42,6 @@ fontconfig
 foot
 fzf
 git
-gnome-calculator
 gnome-keyring
 gnome-themes-extra
 grim
@@ -50,6 +50,7 @@ gum
 gvfs-mtp
 gvfs-nfs
 gvfs-smb
+herdr
 hyprland
 hyprland-guiutils
 hyprland-preview-share-picker
@@ -63,11 +64,11 @@ inxi
 networkmanager
 jq
 kernel-modules-hook
-kvantum-qt5
 lazydocker
 lazygit
 less
 libsecret
+libvips
 libyaml
 libreoffice-fresh
 llvm
@@ -90,6 +91,7 @@ nss-mdns
 nvim
 obs-studio
 obsidian
+omacalc
 omacut
 omawrite
 omarchy-nvim
@@ -102,15 +104,14 @@ postgresql-libs
 power-profiles-daemon
 python-gobject
 python-poetry-core
-python-terminaltexteffects
+ttfx
 qemu-user-static-binfmt
-qt5-wayland
-quickshell
+qrencode
+quickshell-git
 ripgrep
 ripgrep-all
 satty
 ruby
-rust
 tensaku
 sddm
 slurp
@@ -146,6 +147,7 @@ xournalpp
 yaru-icon-theme
 yay
 yt-dlp
+zbar
 zoxide
 zsh
 nnn

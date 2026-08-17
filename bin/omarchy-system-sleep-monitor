@@ -4,32 +4,58 @@
 # omarchy:group=system
 # omarchy:hidden=true
 
-monitor_command='exec dbus-monitor --system "type='\''signal'\'',sender='\''org.freedesktop.login1'\'',interface='\''org.freedesktop.login1.Manager'\'',member='\''PrepareForSleep'\''"'
-
 consume_sleep_events() {
   local line sleep_lock
-  sleep_lock=$(command -v omarchy-system-sleep-lock || true)
-  sleep_lock=${sleep_lock:-/usr/bin/omarchy-system-sleep-lock}
+  sleep_lock="$OMARCHY_PATH/bin/omarchy-system-sleep-lock"
 
   while IFS= read -r line; do
     if [[ $line == *"boolean true"* ]]; then
       "$sleep_lock"
-      exit 0
+      return 0
     fi
   done
 }
 
-if [[ ${1:-} == "--consume" ]]; then
-  consume_sleep_events
-  exit 0
-fi
+monitor_sleep_events() {
+  local monitor_fd monitor_pid status
 
-sleep_monitor=$(command -v omarchy-system-sleep-monitor || true)
-sleep_monitor=${sleep_monitor:-/usr/bin/omarchy-system-sleep-monitor}
+  coproc SLEEP_EVENTS {
+    exec dbus-monitor --system \
+      "type='signal',sender='org.freedesktop.login1',interface='org.freedesktop.login1.Manager',member='PrepareForSleep'"
+  }
+  monitor_fd=${SLEEP_EVENTS[0]}
+  monitor_pid=$SLEEP_EVENTS_PID
+
+  cleanup_monitor() {
+    kill "$monitor_pid" 2>/dev/null || true
+    wait "$monitor_pid" 2>/dev/null || true
+  }
+  trap cleanup_monitor EXIT
+
+  consume_sleep_events <&"$monitor_fd"
+  status=$?
+  cleanup_monitor
+  trap - EXIT
+
+  return "$status"
+}
+
+case ${1:-} in
+  --consume)
+    consume_sleep_events
+    exit 0
+    ;;
+  --inhibited)
+    monitor_sleep_events
+    exit 0
+    ;;
+esac
+
+sleep_monitor="$OMARCHY_PATH/bin/omarchy-system-sleep-monitor"
 
 exec systemd-inhibit \
   --what=sleep \
   --mode=delay \
   --who=Omarchy \
   --why="Lock screen before suspend" \
-  bash -lc "$monitor_command | \"$sleep_monitor\" --consume"
+  "$sleep_monitor" --inhibited
