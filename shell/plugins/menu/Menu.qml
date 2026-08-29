@@ -1202,6 +1202,7 @@ Item {
           color: "transparent"
 
           Text {
+            textFormat: Text.PlainText
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
@@ -1290,6 +1291,7 @@ Item {
 
               Text {
                 id: iconText
+                textFormat: Text.PlainText
                 visible: row.hasIcon && !row.isApp
                 text: row.icon
                 color: row.hasCursor ? root.selectedText : root.foreground
@@ -1331,6 +1333,7 @@ Item {
 
                 Text {
                   id: labelText
+                  textFormat: Text.PlainText
                   width: parent.width
                   text: row.label
                   color: row.hasCursor ? root.selectedText : root.foreground
@@ -1341,6 +1344,7 @@ Item {
                 }
 
                 Text {
+                  textFormat: Text.PlainText
                   width: parent.width
                   text: row.detail
                   visible: (root.filterText || row.kind === "dmenu") && row.detail.length > 0
@@ -1361,6 +1365,7 @@ Item {
                 spacing: 0
 
                 Text {
+                  textFormat: Text.PlainText
                   visible: false
                   text: row.childCount
                   color: root.foreground
@@ -1371,6 +1376,7 @@ Item {
                 }
 
                 Text {
+                  textFormat: Text.PlainText
                   text: row.kind === "menu" || row.kind === "link" ? "›" : ""
                   color: row.hasCursor ? root.selectedText : root.foreground
                   opacity: row.kind === "menu" || row.kind === "link" ? 0.36 : 0
@@ -1455,6 +1461,7 @@ Item {
             }
 
             Text {
+              textFormat: Text.PlainText
               text: root.filterText ? "No matches for “" + root.filterText + "”" : "Nothing here yet"
               color: root.foreground
               opacity: 0.7
