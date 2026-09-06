@@ -107,6 +107,8 @@ ttfx
 qemu-user-static-binfmt
 qrencode
 qt6-imageformats
+qt6-multimedia
+qt6-multimedia-ffmpeg
 quickshell
 ripgrep
 ripgrep-all
