@@ -76,4 +76,6 @@ suppress_default_binds = true
 ## alias = command to run
 
 # Edit the current image in Tensaku and quit the viewer
-<Ctrl+e> = exec tensaku-edit "$imv_current_file" & ; quit
+# <Ctrl+e> = exec tensaku-edit "$imv_current_file" & ; quit
+# Edit the current image in Omasnap and quit the viewer
+<Ctrl+e> = exec omasnap "$imv_current_file" & ; quit
