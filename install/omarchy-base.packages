@@ -95,6 +95,7 @@ omacalc
 omacut
 omawrite
 omarchy-nvim
+omasnap
 # OWE owns desktop video backgrounds and feeds the lock screen its frames.
 owe
 owe-lockfeed
@@ -116,7 +117,6 @@ ripgrep
 ripgrep-all
 satty
 ruby
-tensaku
 sddm
 slurp
 socat
