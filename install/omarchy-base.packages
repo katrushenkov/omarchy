@@ -83,6 +83,7 @@ mpv
 mpv-mpris
 nautilus
 nautilus-python
+nautilus-image-converter
 gnome-disk-utility
 noto-fonts
 noto-fonts-cjk
