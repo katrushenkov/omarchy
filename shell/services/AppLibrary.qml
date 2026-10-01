@@ -209,12 +209,39 @@ Item {
     onExited: root.iconIndex = root.pendingIconIndex
   }
 
-  // Coalesces bursts of app-list changes (a package install touches many
-  // entries) into a single rescan.
+  property bool rescanPending: false
+
+  function rescanApps() {
+    if (!hiddenEntryScan.running) hiddenEntryScan.running = true
+    if (!iconIndexScan.running) iconIndexScan.running = true
+    root.appsChanged()
+  }
+
+  // Throttles app-list changes to one rescan per interval. The desktop-entry
+  // watcher also fires for attribute changes on ancestor directories such as
+  // $HOME, so any tool that touches ~/.something every second would otherwise
+  // keep both scans running nonstop. The first change rescans at once; later
+  // ones within the window (a package install touching many entries) coalesce
+  // into a single trailing rescan. A restart()-style debounce would starve
+  // under a steady stream of changes and never rescan.
+  function requestRescan() {
+    if (rescanThrottle.running) {
+      root.rescanPending = true
+      return
+    }
+    root.rescanApps()
+    rescanThrottle.start()
+  }
+
   Timer {
-    id: iconIndexDebounce
-    interval: 750
-    onTriggered: if (!iconIndexScan.running) iconIndexScan.running = true
+    id: rescanThrottle
+    interval: 2000
+    onTriggered: {
+      if (!root.rescanPending) return
+      root.rescanPending = false
+      root.rescanApps()
+      rescanThrottle.start()
+    }
   }
 
   FileView {
@@ -254,11 +281,7 @@ Item {
 
   Connections {
     target: DesktopEntries.applications
-    function onValuesChanged() {
-      hiddenEntryScan.running = true
-      iconIndexDebounce.restart()
-      root.appsChanged()
-    }
+    function onValuesChanged() { root.requestRescan() }
   }
 
   Component.onCompleted: {

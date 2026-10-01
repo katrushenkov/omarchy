@@ -129,6 +129,15 @@ assert(
   'app library scans avoid login shells whose profile activation retriggers the desktop-entry watcher'
 )
 
+const valuesChangedMatch = appLibraryQml.match(/target: DesktopEntries\.applications\s*function onValuesChanged\(\) \{([\s\S]*?)\}/)
+assert(valuesChangedMatch, 'app library reacts to desktop-entry changes')
+assert(
+  valuesChangedMatch[1].trim() === 'root.requestRescan()' &&
+    /function requestRescan\(\) \{[\s\S]*?if \(rescanThrottle\.running\) \{[\s\S]*?root\.rescanPending = true/.test(appLibraryQml) &&
+    !/rescanThrottle\.restart\(\)/.test(appLibraryQml),
+  'app library throttles rescans so steady $HOME attribute churn cannot run the scans nonstop'
+)
+
 assert(
   /if \(active === "apps"\) \{[\s\S]*?rows\.sort\(function\(a, b\)/.test(menuQml),
   'apps menu enforces alphabetical display order after provider refreshes'
