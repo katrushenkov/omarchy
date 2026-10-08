@@ -1675,6 +1675,7 @@ Item {
     pressAndHoldInterval: 200
 
     function startDrag(x, y) {
+      if (true) return // local: disable dragging the bar to another edge
       if (dragging) return
       dragging = true
       root.beginBarMove(root.targetWindow(gestureArea))
@@ -1934,7 +1935,7 @@ Item {
       property bool suppressClick: false
       property real pressedX: 0
       property real pressedY: 0
-      readonly property bool canReorder: root.shell && typeof root.shell.mutateShellConfig === "function"
+      readonly property bool canReorder: false // local: disable widget drag-reorder
       readonly property real dragThreshold: Style.space(4)
 
       anchors.fill: parent
