@@ -129,6 +129,7 @@ ripgrep-all
 satty
 ruby
 sddm
+signed
 slurp
 socat
 starship
@@ -161,7 +162,6 @@ woff2-font-awesome
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
 xdg-terminal-exec
-xournalpp
 yaru-icon-theme
 yay
 yt-dlp
