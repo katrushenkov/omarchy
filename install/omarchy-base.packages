@@ -126,7 +126,6 @@ qt6-imageformats
 quickshell
 ripgrep
 ripgrep-all
-satty
 ruby
 sddm
 signed
@@ -175,15 +174,9 @@ kvantum-qt5
 net-tools
 zathura
 zathura-pdf-mupdf
-dnsutils
 mediainfo
 simple-scan
-remmina
-freerdp
 keepassxc
-thunar
-thunar-archive-plugin
-thunar-volman
 syncthing
 wev
 telegram-desktop
