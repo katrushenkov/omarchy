@@ -32,7 +32,9 @@ set -euo pipefail
 
 PROVISIONING_DIR=/var/lib/omarchy/provisioning
 PACKAGED_PATH=/usr/bin/omarchy-system-factory-reset
-OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}"
+# sudo drops OMARCHY_PATH from the environment, and omarchy-i18n, which
+# supplies every line of the prompts below, needs it there.
+export OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}"
 TOP_MNT=/run/omarchy-system-factory-reset/top
 NEXT_NAME=@omarchy-reset-next
 LOG_FILE=/var/log/omarchy-system-factory-reset.log
@@ -517,14 +519,6 @@ stage_full_reset() {
   # /etc/shadow, which the new wheel user could mount and read — and a second
   # reset would restore that account. Scrub it once, in place.
   sanitize_factory_baseline "$top/@factory"
-
-  # Keep the Node tarball reachable for offline first-boot finalization.
-  if ! compgen -G "$next$PROVISIONING_DIR/packages/node-v*.tar.gz" >/dev/null; then
-    if compgen -G "$PROVISIONING_DIR/packages/node-v*.tar.gz" >/dev/null; then
-      install -d -m 755 "$next$PROVISIONING_DIR/packages"
-      cp "$PROVISIONING_DIR"/packages/node-v*.tar.gz "$next$PROVISIONING_DIR/packages/"
-    fi
-  fi
 
   install -d -m 755 "$next$PROVISIONING_DIR"
   touch "$next$PROVISIONING_DIR/pending" "$next$PROVISIONING_DIR/wipe-pending"
