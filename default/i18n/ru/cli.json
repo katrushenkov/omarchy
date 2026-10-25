@@ -1,4 +1,17 @@
 {
+  "about.ageUptimeUpdate": "Возраст / Время работы / Обновление",
+  "about.days": {
+    "few": "%1 дня",
+    "many": "%1 дней",
+    "one": "%1 день",
+    "other": "%1 дней"
+  },
+  "about.hardware": "Оборудование",
+  "about.osAge": "Возраст ОС",
+  "about.software": "ПО",
+  "about.update": "Обновление",
+  "about.updatedAt": "%1 в %2",
+  "about.uptime": "Время работы",
   "agents.addFailed": "Не удалось добавить аккаунт %1",
   "agents.added": "Добавлен %1.",
   "agents.allOver": "Все аккаунты %1 превысили %2%",
@@ -115,7 +128,7 @@
   "firstRun.agentTitle": "Выберите агента по умолчанию",
   "firstRun.fingerprintBody": "Включите sudo и разблокировку по отпечатку пальца.",
   "firstRun.fingerprintTitle": "Настройка сканера отпечатков",
-  "firstRun.gitBody": "Данные для коммитов кода",
+  "firstRun.gitBody": "Идентификация для коммитов кода.",
   "firstRun.gitTitle": "Настройка Git",
   "firstRun.keybindingsBody": "Super + K — шпаргалка.\nSuper + Space — меню Omarchy.",
   "firstRun.keybindingsTitle": "Изучите горячие клавиши",

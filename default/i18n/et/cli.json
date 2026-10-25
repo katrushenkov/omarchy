@@ -1,4 +1,15 @@
 {
+  "about.ageUptimeUpdate": "Vanus / Tööaeg / Uuendus",
+  "about.days": {
+    "one": "%1 päev",
+    "other": "%1 päeva"
+  },
+  "about.hardware": "Riistvara",
+  "about.osAge": "OS-i vanus",
+  "about.software": "Tarkvara",
+  "about.update": "Uuendus",
+  "about.updatedAt": "%1 kell %2",
+  "about.uptime": "Tööaeg",
   "agents.addFailed": "%1-kontot ei õnnestunud lisada",
   "agents.added": "Lisatud %1.",
   "agents.allOver": "Kõik %1-kontod on üle %2%",
@@ -115,7 +126,7 @@
   "firstRun.agentTitle": "Määra vaikeagent",
   "firstRun.fingerprintBody": "Luba sudo ja avamine sõrmejäljega.",
   "firstRun.fingerprintTitle": "Seadista sõrmejäljelugeja",
-  "firstRun.gitBody": "Identiteet koodi sissekannete jaoks",
+  "firstRun.gitBody": "Identiteet koodikinnistuste jaoks.",
   "firstRun.gitTitle": "Seadista Git",
   "firstRun.keybindingsBody": "Super + K näitab spikrit.\nSuper + Space avab Omarchy menüü.",
   "firstRun.keybindingsTitle": "Õpi kiirklahve",

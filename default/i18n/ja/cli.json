@@ -1,4 +1,14 @@
 {
+  "about.ageUptimeUpdate": "経過期間 / 稼働時間 / 更新",
+  "about.days": {
+    "other": "%1日"
+  },
+  "about.hardware": "ハードウェア",
+  "about.osAge": "OS使用期間",
+  "about.software": "ソフトウェア",
+  "about.update": "更新",
+  "about.updatedAt": "%1 %2",
+  "about.uptime": "稼働時間",
   "agents.addFailed": "%1 アカウントを追加できませんでした",
   "agents.added": "%1 を追加しました。",
   "agents.allOver": "すべての %1 アカウントが %2% を超えています",
@@ -115,7 +125,7 @@
   "firstRun.agentTitle": "デフォルトのエージェントを設定",
   "firstRun.fingerprintBody": "指紋でsudoとロック解除を有効にします。",
   "firstRun.fingerprintTitle": "指紋リーダーを設定",
-  "firstRun.gitBody": "コードのコミット用の識別情報",
+  "firstRun.gitBody": "コードのコミットに使う識別情報です。",
   "firstRun.gitTitle": "Git の設定",
   "firstRun.keybindingsBody": "チートシートは Super + K。\nOmarchy Menu は Super + Space。",
   "firstRun.keybindingsTitle": "キーバインドを学ぶ",

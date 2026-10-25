@@ -1,4 +1,15 @@
 {
+  "about.ageUptimeUpdate": "Alter / Betriebszeit / Update",
+  "about.days": {
+    "one": "%1 Tag",
+    "other": "%1 Tage"
+  },
+  "about.hardware": "Hardware",
+  "about.osAge": "OS-Alter",
+  "about.software": "Software",
+  "about.update": "Update",
+  "about.updatedAt": "%1 um %2",
+  "about.uptime": "Betriebszeit",
   "agents.addFailed": "Das %1-Konto konnte nicht hinzugefügt werden",
   "agents.added": "%1 hinzugefügt.",
   "agents.allOver": "Alle %1-Konten liegen über %2%",
@@ -115,7 +126,7 @@
   "firstRun.agentTitle": "Standardagent festlegen",
   "firstRun.fingerprintBody": "Sudo und Entsperren per Fingerabdruck aktivieren.",
   "firstRun.fingerprintTitle": "Fingerabdruckleser einrichten",
-  "firstRun.gitBody": "Identifikation für Code-Commits",
+  "firstRun.gitBody": "Identität für Code-Commits.",
   "firstRun.gitTitle": "Git einrichten",
   "firstRun.keybindingsBody": "Super + K für die Tastenkürzel-Übersicht.\nSuper + Space für das Omarchy Menu.",
   "firstRun.keybindingsTitle": "Tastenkürzel lernen",

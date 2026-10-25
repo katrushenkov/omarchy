@@ -1,4 +1,15 @@
 {
+  "about.ageUptimeUpdate": "Alder / Oppetid / Oppdatering",
+  "about.days": {
+    "one": "%1 dag",
+    "other": "%1 dager"
+  },
+  "about.hardware": "Maskinvare",
+  "about.osAge": "OS-alder",
+  "about.software": "Programvare",
+  "about.update": "Oppdatering",
+  "about.updatedAt": "%1 kl. %2",
+  "about.uptime": "Oppetid",
   "agents.addFailed": "Kunne ikke legge til %1-kontoen",
   "agents.added": "La til %1.",
   "agents.allOver": "Alle %1-kontoer er over %2%",
@@ -115,7 +126,7 @@
   "firstRun.agentTitle": "Angi standardagent",
   "firstRun.fingerprintBody": "Aktiver sudo og opplåsing med fingeravtrykk.",
   "firstRun.fingerprintTitle": "Sett opp fingeravtrykksleser",
-  "firstRun.gitBody": "Identifikasjon for kodecommits",
+  "firstRun.gitBody": "Identitet for kodecommits.",
   "firstRun.gitTitle": "Sett opp Git",
   "firstRun.keybindingsBody": "Super + K for jukseark.\nSuper + Space for Omarchy-menyen.",
   "firstRun.keybindingsTitle": "Lær hurtigtaster",

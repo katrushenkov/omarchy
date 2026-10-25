@@ -1,4 +1,15 @@
 {
+  "about.ageUptimeUpdate": "عمر / اپ ٹائم / اپ ڈیٹ",
+  "about.days": {
+    "one": "ایک دن",
+    "other": "%1 دن"
+  },
+  "about.hardware": "ہارڈ ویئر",
+  "about.osAge": "OS کی عمر",
+  "about.software": "سافٹ ویئر",
+  "about.update": "اپ ڈیٹ",
+  "about.updatedAt": "%1 پر %2",
+  "about.uptime": "اپ ٹائم",
   "agents.addFailed": "%1 اکاؤنٹ شامل نہیں ہو سکا",
   "agents.added": "%1 شامل ہو گیا۔",
   "agents.allOver": "تمام %1 اکاؤنٹس %2% سے اوپر ہیں",
@@ -115,7 +126,7 @@
   "firstRun.agentTitle": "اپنا ڈیفالٹ ایجنٹ سیٹ کریں",
   "firstRun.fingerprintBody": "اپنے فنگر پرنٹ سے sudo اور ان لاک فعال کریں۔",
   "firstRun.fingerprintTitle": "فنگر پرنٹ ریڈر سیٹ کریں",
-  "firstRun.gitBody": "کوڈ کمٹس کے لیے شناخت",
+  "firstRun.gitBody": "کوڈ کمٹس کے لیے شناخت۔",
   "firstRun.gitTitle": "Git سیٹ کریں",
   "firstRun.keybindingsBody": "چیٹ شیٹ کے لیے Super + K۔\nOmarchy Menu کے لیے Super + Space۔",
   "firstRun.keybindingsTitle": "کی بائنڈنگز سیکھیں",

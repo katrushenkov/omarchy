@@ -1,4 +1,16 @@
 {
+  "about.ageUptimeUpdate": "Vechime / Funcționare / Actualizare",
+  "about.days": {
+    "few": "%1 zile",
+    "one": "%1 zi",
+    "other": "%1 de zile"
+  },
+  "about.hardware": "Hardware",
+  "about.osAge": "Vechimea sistemului",
+  "about.software": "Software",
+  "about.update": "Actualizare",
+  "about.updatedAt": "%1 la %2",
+  "about.uptime": "Timp de funcționare",
   "agents.addFailed": "Nu s-a putut adăuga contul %1",
   "agents.added": "S-a adăugat %1.",
   "agents.allOver": "Toate conturile %1 sunt peste %2%",
@@ -115,7 +127,7 @@
   "firstRun.agentTitle": "Setează agentul implicit",
   "firstRun.fingerprintBody": "Activează sudo și deblocarea cu amprenta.",
   "firstRun.fingerprintTitle": "Configurează cititorul de amprente",
-  "firstRun.gitBody": "Identificare pentru commituri de cod",
+  "firstRun.gitBody": "Identificare pentru commituri de cod.",
   "firstRun.gitTitle": "Configurare Git",
   "firstRun.keybindingsBody": "Super + K pentru ghidul rapid.\nSuper + Space pentru meniul Omarchy.",
   "firstRun.keybindingsTitle": "Învață scurtăturile",

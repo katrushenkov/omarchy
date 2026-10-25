@@ -1,4 +1,14 @@
 {
+  "about.ageUptimeUpdate": "Usia / Waktu Aktif / Pembaruan",
+  "about.days": {
+    "other": "%1 hari"
+  },
+  "about.hardware": "Perangkat Keras",
+  "about.osAge": "Usia OS",
+  "about.software": "Perangkat Lunak",
+  "about.update": "Pembaruan",
+  "about.updatedAt": "%1 pukul %2",
+  "about.uptime": "Waktu Aktif",
   "agents.addFailed": "Tidak dapat menambahkan akun %1",
   "agents.added": "%1 ditambahkan.",
   "agents.allOver": "Semua akun %1 melebihi %2%",
@@ -115,7 +125,7 @@
   "firstRun.agentTitle": "Atur agen default",
   "firstRun.fingerprintBody": "Aktifkan sudo dan buka kunci dengan sidik jari Anda.",
   "firstRun.fingerprintTitle": "Atur Pembaca Sidik Jari",
-  "firstRun.gitBody": "Identitas untuk commit kode",
+  "firstRun.gitBody": "Identitas untuk commit kode.",
   "firstRun.gitTitle": "Siapkan Git",
   "firstRun.keybindingsBody": "Super + K untuk lembar contekan.\nSuper + Space untuk Menu Omarchy.",
   "firstRun.keybindingsTitle": "Pelajari Pintasan Keyboard",

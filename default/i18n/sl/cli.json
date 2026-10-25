@@ -1,4 +1,17 @@
 {
+  "about.ageUptimeUpdate": "Starost / Čas delovanja / Posodobitev",
+  "about.days": {
+    "few": "%1 dnevi",
+    "one": "%1 dan",
+    "other": "%1 dni",
+    "two": "%1 dneva"
+  },
+  "about.hardware": "Strojna oprema",
+  "about.osAge": "Starost OS",
+  "about.software": "Programska oprema",
+  "about.update": "Posodobitev",
+  "about.updatedAt": "%1 ob %2",
+  "about.uptime": "Čas delovanja",
   "agents.addFailed": "Računa %1 ni bilo mogoče dodati",
   "agents.added": "Dodano: %1.",
   "agents.allOver": "Vsi računi %1 so nad %2%",
@@ -115,7 +128,7 @@
   "firstRun.agentTitle": "Nastavite privzetega agenta",
   "firstRun.fingerprintBody": "Omogočite sudo in odklepanje s prstnim odtisom.",
   "firstRun.fingerprintTitle": "Nastavite bralnik prstnih odtisov",
-  "firstRun.gitBody": "Identifikacija za uveljavitve kode",
+  "firstRun.gitBody": "Identiteta za potrditve kode.",
   "firstRun.gitTitle": "Nastavite Git",
   "firstRun.keybindingsBody": "Super + K za pregled bližnjic.\nSuper + Space za meni Omarchy.",
   "firstRun.keybindingsTitle": "Spoznajte bližnjice",

@@ -1,4 +1,14 @@
 {
+  "about.ageUptimeUpdate": "年齡 / 運行時間 / 更新",
+  "about.days": {
+    "other": "%1 天"
+  },
+  "about.hardware": "硬體",
+  "about.osAge": "系統年齡",
+  "about.software": "軟體",
+  "about.update": "更新",
+  "about.updatedAt": "%1 於 %2",
+  "about.uptime": "運行時間",
   "agents.addFailed": "無法新增 %1 帳號",
   "agents.added": "已新增 %1。",
   "agents.allOver": "所有 %1 帳號都已超過 %2%",
@@ -115,7 +125,7 @@
   "firstRun.agentTitle": "設定預設 agent",
   "firstRun.fingerprintBody": "啟用以指紋使用 sudo 與解鎖。",
   "firstRun.fingerprintTitle": "設定指紋讀取器",
-  "firstRun.gitBody": "用於程式碼提交的身分資訊",
+  "firstRun.gitBody": "程式碼提交的身分資訊。",
   "firstRun.gitTitle": "設定 Git",
   "firstRun.keybindingsBody": "Super + K 查看速查表。\nSuper + Space 開啟 Omarchy Menu。",
   "firstRun.keybindingsTitle": "學習快捷鍵",

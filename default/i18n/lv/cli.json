@@ -1,4 +1,16 @@
 {
+  "about.ageUptimeUpdate": "Vecums / Darbības laiks / Atjauninājums",
+  "about.days": {
+    "one": "%1 diena",
+    "other": "%1 dienas",
+    "zero": "%1 dienu"
+  },
+  "about.hardware": "Aparatūra",
+  "about.osAge": "OS vecums",
+  "about.software": "Programmatūra",
+  "about.update": "Atjauninājums",
+  "about.updatedAt": "%1 plkst. %2",
+  "about.uptime": "Darbības laiks",
   "agents.addFailed": "Neizdevās pievienot %1 kontu",
   "agents.added": "Pievienots %1.",
   "agents.allOver": "Visi %1 konti pārsniedz %2%",
@@ -115,7 +127,7 @@
   "firstRun.agentTitle": "Iestatiet noklusējuma aģentu",
   "firstRun.fingerprintBody": "Iespējojiet sudo un atbloķēšanu ar pirksta nospiedumu.",
   "firstRun.fingerprintTitle": "Iestatiet pirksta nospiedumu lasītāju",
-  "firstRun.gitBody": "Identifikācija koda komitiem",
+  "firstRun.gitBody": "Identifikācija koda iesniegumiem.",
   "firstRun.gitTitle": "Git iestatīšana",
   "firstRun.keybindingsBody": "Super + K — īsceļu lapa.\nSuper + Space — Omarchy izvēlne.",
   "firstRun.keybindingsTitle": "Apgūt īsceļus",

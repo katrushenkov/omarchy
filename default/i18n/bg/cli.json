@@ -1,4 +1,15 @@
 {
+  "about.ageUptimeUpdate": "Възраст / Време на работа / Актуализация",
+  "about.days": {
+    "one": "%1 ден",
+    "other": "%1 дни"
+  },
+  "about.hardware": "Хардуер",
+  "about.osAge": "Възраст на ОС",
+  "about.software": "Софтуер",
+  "about.update": "Актуализация",
+  "about.updatedAt": "%1 в %2",
+  "about.uptime": "Време на работа",
   "agents.addFailed": "Профилът %1 не можа да се добави",
   "agents.added": "Добавен е %1.",
   "agents.allOver": "Всички профили в %1 са над %2%",
@@ -115,7 +126,7 @@
   "firstRun.agentTitle": "Задайте агент по подразбиране",
   "firstRun.fingerprintBody": "Включете sudo и отключване с пръстов отпечатък.",
   "firstRun.fingerprintTitle": "Настройте четеца за пръстови отпечатъци",
-  "firstRun.gitBody": "Идентификация за комити в кода",
+  "firstRun.gitBody": "Идентификация за комити на код.",
   "firstRun.gitTitle": "Настрой Git",
   "firstRun.keybindingsBody": "Super + K за бърз справочник.\nSuper + Space за менюто на Omarchy.",
   "firstRun.keybindingsTitle": "Научи клавишните комбинации",

@@ -1,4 +1,16 @@
 {
+  "about.ageUptimeUpdate": "Starost / Vrijeme rada / Ažuriranje",
+  "about.days": {
+    "few": "%1 dana",
+    "one": "%1 dan",
+    "other": "%1 dana"
+  },
+  "about.hardware": "Hardver",
+  "about.osAge": "Starost sustava",
+  "about.software": "Softver",
+  "about.update": "Ažuriranje",
+  "about.updatedAt": "%1 u %2",
+  "about.uptime": "Vrijeme rada",
   "agents.addFailed": "Nije moguće dodati %1 račun",
   "agents.added": "Dodano %1.",
   "agents.allOver": "Svi %1 računi prelaze %2%",
@@ -115,7 +127,7 @@
   "firstRun.agentTitle": "Postavi zadanog agenta",
   "firstRun.fingerprintBody": "Omogući sudo i otključavanje otiskom prsta.",
   "firstRun.fingerprintTitle": "Postavi čitač otiska prsta",
-  "firstRun.gitBody": "Identifikacijski podaci za commitove koda",
+  "firstRun.gitBody": "Identifikacija za commitove koda.",
   "firstRun.gitTitle": "Postavi Git",
   "firstRun.keybindingsBody": "Super + K za podsjetnik.\nSuper + Space za Omarchy izbornik.",
   "firstRun.keybindingsTitle": "Nauči tipkovničke prečace",

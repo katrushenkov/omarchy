@@ -1,4 +1,15 @@
 {
+  "about.ageUptimeUpdate": "வயது / இயங்கு நேரம் / புதுப்பிப்பு",
+  "about.days": {
+    "one": "%1 நாள்",
+    "other": "%1 நாட்கள்"
+  },
+  "about.hardware": "வன்பொருள்",
+  "about.osAge": "OS வயது",
+  "about.software": "மென்பொருள்",
+  "about.update": "புதுப்பிப்பு",
+  "about.updatedAt": "%1 அன்று %2",
+  "about.uptime": "இயங்கு நேரம்",
   "agents.addFailed": "%1 கணக்கைச் சேர்க்க முடியவில்லை",
   "agents.added": "%1 சேர்க்கப்பட்டது.",
   "agents.allOver": "அனைத்து %1 கணக்குகளும் %2% ஐத் தாண்டிவிட்டன",
@@ -115,7 +126,7 @@
   "firstRun.agentTitle": "இயல்புநிலை ஏஜென்ட்டை அமைக்கவும்",
   "firstRun.fingerprintBody": "உங்கள் கைரேகை மூலம் sudo மற்றும் திறப்பை இயக்கவும்.",
   "firstRun.fingerprintTitle": "கைரேகை ரீடர் அமைப்பு",
-  "firstRun.gitBody": "குறியீடு கமிட்களுக்கான அடையாளம்",
+  "firstRun.gitBody": "குறியீடு கமிட்களுக்கான அடையாளத் தகவல்.",
   "firstRun.gitTitle": "Git அமைப்பு",
   "firstRun.keybindingsBody": "குறிப்புத்தாளுக்கு Super + K.\nOmarchy மெனுவுக்கு Super + Space.",
   "firstRun.keybindingsTitle": "விசைக் குறுக்குவழிகளை அறியவும்",

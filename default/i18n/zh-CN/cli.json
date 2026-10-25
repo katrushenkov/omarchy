@@ -1,4 +1,14 @@
 {
+  "about.ageUptimeUpdate": "安装时长 / 运行时间 / 更新",
+  "about.days": {
+    "other": "%1 天"
+  },
+  "about.hardware": "硬件",
+  "about.osAge": "安装时长",
+  "about.software": "软件",
+  "about.update": "更新",
+  "about.updatedAt": "%1 %2",
+  "about.uptime": "运行时间",
   "agents.addFailed": "无法添加 %1 账户",
   "agents.added": "已添加 %1。",
   "agents.allOver": "所有 %1 账户均已超过 %2%",
@@ -115,7 +125,7 @@
   "firstRun.agentTitle": "设置默认智能体",
   "firstRun.fingerprintBody": "启用指纹 sudo 和解锁。",
   "firstRun.fingerprintTitle": "设置指纹识别器",
-  "firstRun.gitBody": "代码提交的身份信息",
+  "firstRun.gitBody": "用于代码提交的身份信息。",
   "firstRun.gitTitle": "设置 Git",
   "firstRun.keybindingsBody": "Super + K 查看速查表。\nSuper + Space 打开 Omarchy 菜单。",
   "firstRun.keybindingsTitle": "学习快捷键",

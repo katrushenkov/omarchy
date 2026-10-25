@@ -1,4 +1,16 @@
 {
+  "about.ageUptimeUpdate": "גיל / זמן פעילות / עדכון",
+  "about.days": {
+    "one": "יום אחד",
+    "other": "%1 ימים",
+    "two": "יומיים"
+  },
+  "about.hardware": "חומרה",
+  "about.osAge": "גיל המערכת",
+  "about.software": "תוכנה",
+  "about.update": "עדכון",
+  "about.updatedAt": "%1 בשעה %2",
+  "about.uptime": "זמן פעילות",
   "agents.addFailed": "לא ניתן להוסיף את חשבון %1",
   "agents.added": "%1 נוסף.",
   "agents.allOver": "כל חשבונות %1 עברו את %2%",
@@ -115,7 +127,7 @@
   "firstRun.agentTitle": "הגדירו סוכן ברירת מחדל",
   "firstRun.fingerprintBody": "הפעילו sudo וביטול נעילה באמצעות טביעת האצבע שלכם.",
   "firstRun.fingerprintTitle": "הגדרת קורא טביעות אצבע",
-  "firstRun.gitBody": "פרטי זיהוי עבור קומיטים בקוד",
+  "firstRun.gitBody": "פרטי זיהוי עבור קומיטים בקוד.",
   "firstRun.gitTitle": "הגדרת Git",
   "firstRun.keybindingsBody": "Super + K לדף הקיצורים.\nSuper + Space לתפריט Omarchy.",
   "firstRun.keybindingsTitle": "לימוד קיצורי מקלדת",

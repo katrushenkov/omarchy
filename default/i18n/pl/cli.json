@@ -1,4 +1,17 @@
 {
+  "about.ageUptimeUpdate": "Wiek / Czas pracy / Aktualizacja",
+  "about.days": {
+    "few": "%1 dni",
+    "many": "%1 dni",
+    "one": "%1 dzień",
+    "other": "%1 dnia"
+  },
+  "about.hardware": "Sprzęt",
+  "about.osAge": "Wiek systemu",
+  "about.software": "Oprogramowanie",
+  "about.update": "Aktualizacja",
+  "about.updatedAt": "%1 o %2",
+  "about.uptime": "Czas pracy",
   "agents.addFailed": "Nie udało się dodać konta %1",
   "agents.added": "Dodano %1.",
   "agents.allOver": "Wszystkie konta %1 są powyżej %2%",
@@ -115,7 +128,7 @@
   "firstRun.agentTitle": "Ustaw domyślnego agenta",
   "firstRun.fingerprintBody": "Włącz sudo i odblokowywanie odciskiem palca.",
   "firstRun.fingerprintTitle": "Skonfiguruj czytnik linii papilarnych",
-  "firstRun.gitBody": "Dane identyfikacyjne do commitów",
+  "firstRun.gitBody": "Tożsamość używana w commitach.",
   "firstRun.gitTitle": "Skonfiguruj Git",
   "firstRun.keybindingsBody": "Super + K otwiera ściągawkę.\nSuper + Space otwiera menu Omarchy.",
   "firstRun.keybindingsTitle": "Poznaj skróty klawiszowe",

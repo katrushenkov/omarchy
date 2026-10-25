@@ -1,4 +1,15 @@
 {
+  "about.ageUptimeUpdate": "Ηλικία / Λειτουργία / Ενημέρωση",
+  "about.days": {
+    "one": "%1 ημέρα",
+    "other": "%1 ημέρες"
+  },
+  "about.hardware": "Υλικό",
+  "about.osAge": "Ηλικία συστήματος",
+  "about.software": "Λογισμικό",
+  "about.update": "Ενημέρωση",
+  "about.updatedAt": "%1 στις %2",
+  "about.uptime": "Χρόνος λειτουργίας",
   "agents.addFailed": "Δεν ήταν δυνατή η προσθήκη λογαριασμού %1",
   "agents.added": "Προστέθηκε το %1.",
   "agents.allOver": "Όλοι οι λογαριασμοί %1 είναι πάνω από %2%",
@@ -115,7 +126,7 @@
   "firstRun.agentTitle": "Ορισμός προεπιλεγμένου agent",
   "firstRun.fingerprintBody": "Ενεργοποιήστε το sudo και το ξεκλείδωμα με το δακτυλικό σας αποτύπωμα.",
   "firstRun.fingerprintTitle": "Ρύθμιση αναγνώστη δακτυλικών αποτυπωμάτων",
-  "firstRun.gitBody": "Στοιχεία ταυτοποίησης για commits κώδικα",
+  "firstRun.gitBody": "Στοιχεία ταυτοποίησης για commits κώδικα.",
   "firstRun.gitTitle": "Ρύθμιση Git",
   "firstRun.keybindingsBody": "Super + K για συντομεύσεις.\nSuper + Space για το Μενού Omarchy.",
   "firstRun.keybindingsTitle": "Μάθε τις συντομεύσεις",

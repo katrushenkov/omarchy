@@ -1,4 +1,16 @@
 {
+  "about.ageUptimeUpdate": "Stáří / Doba běhu / Aktualizace",
+  "about.days": {
+    "few": "%1 dny",
+    "one": "%1 den",
+    "other": "%1 dní"
+  },
+  "about.hardware": "Hardware",
+  "about.osAge": "Stáří systému",
+  "about.software": "Software",
+  "about.update": "Aktualizace",
+  "about.updatedAt": "%1 v %2",
+  "about.uptime": "Doba běhu",
   "agents.addFailed": "Nepodařilo se přidat účet %1",
   "agents.added": "Přidáno %1.",
   "agents.allOver": "Všechny účty %1 jsou nad %2%",
@@ -115,7 +127,7 @@
   "firstRun.agentTitle": "Nastavit výchozího agenta",
   "firstRun.fingerprintBody": "Povolte sudo a odemykání otiskem prstu.",
   "firstRun.fingerprintTitle": "Nastavení čtečky otisků prstů",
-  "firstRun.gitBody": "Identifikace pro commity kódu",
+  "firstRun.gitBody": "Identita pro commity kódu.",
   "firstRun.gitTitle": "Nastavte Git",
   "firstRun.keybindingsBody": "Super + K pro přehled zkratek.\nSuper + Space pro Omarchy Menu.",
   "firstRun.keybindingsTitle": "Poznejte klávesové zkratky",

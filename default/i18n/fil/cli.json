@@ -1,4 +1,15 @@
 {
+  "about.ageUptimeUpdate": "Edad / Uptime / Update",
+  "about.days": {
+    "one": "%1 araw",
+    "other": "%1 araw"
+  },
+  "about.hardware": "Hardware",
+  "about.osAge": "Edad ng OS",
+  "about.software": "Software",
+  "about.update": "Update",
+  "about.updatedAt": "%1 sa %2",
+  "about.uptime": "Uptime",
   "agents.addFailed": "Hindi maidagdag ang account na %1",
   "agents.added": "Naidagdag ang %1.",
   "agents.allOver": "Lahat ng %1 account ay lampas sa %2%",
@@ -115,7 +126,7 @@
   "firstRun.agentTitle": "Itakda ang default mong agent",
   "firstRun.fingerprintBody": "Paganahin ang sudo at pag-unlock gamit ang fingerprint mo.",
   "firstRun.fingerprintTitle": "I-setup ang Fingerprint Reader",
-  "firstRun.gitBody": "Pagkakakilanlan para sa mga commit sa code",
+  "firstRun.gitBody": "Pagkakakilanlan para sa mga code commit.",
   "firstRun.gitTitle": "I-setup ang Git",
   "firstRun.keybindingsBody": "Super + K para sa cheatsheet.\nSuper + Space para sa Omarchy Menu.",
   "firstRun.keybindingsTitle": "Alamin ang Keybindings",

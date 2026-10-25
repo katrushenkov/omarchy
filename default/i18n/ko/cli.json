@@ -1,4 +1,14 @@
 {
+  "about.ageUptimeUpdate": "설치 기간 / 가동 시간 / 업데이트",
+  "about.days": {
+    "other": "%1일"
+  },
+  "about.hardware": "하드웨어",
+  "about.osAge": "OS 설치 기간",
+  "about.software": "소프트웨어",
+  "about.update": "업데이트",
+  "about.updatedAt": "%1 %2",
+  "about.uptime": "가동 시간",
   "agents.addFailed": "%1 계정을 추가할 수 없습니다",
   "agents.added": "%1을(를) 추가했습니다.",
   "agents.allOver": "모든 %1 계정이 %2%를 초과했습니다",
@@ -115,7 +125,7 @@
   "firstRun.agentTitle": "기본 에이전트 설정",
   "firstRun.fingerprintBody": "지문으로 sudo와 잠금 해제를 사용하세요.",
   "firstRun.fingerprintTitle": "지문 인식 설정",
-  "firstRun.gitBody": "코드 커밋용 신원 정보",
+  "firstRun.gitBody": "코드 커밋용 식별 정보.",
   "firstRun.gitTitle": "Git 설정",
   "firstRun.keybindingsBody": "Super + K: 치트 시트.\nSuper + Space: Omarchy 메뉴.",
   "firstRun.keybindingsTitle": "단축키 익히기",

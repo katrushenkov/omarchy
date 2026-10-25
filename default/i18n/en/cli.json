@@ -1,4 +1,15 @@
 {
+  "about.ageUptimeUpdate": "Age / Uptime / Update",
+  "about.days": {
+    "one": "%1 day",
+    "other": "%1 days"
+  },
+  "about.hardware": "Hardware",
+  "about.osAge": "OS Age",
+  "about.software": "Software",
+  "about.update": "Update",
+  "about.updatedAt": "%1 at %2",
+  "about.uptime": "Uptime",
   "agents.addFailed": "Couldn't add the %1 account",
   "agents.added": "Added %1.",
   "agents.allOver": "All %1 accounts are over %2%",
@@ -115,7 +126,7 @@
   "firstRun.agentTitle": "Set your default agent",
   "firstRun.fingerprintBody": "Enable sudo and unlocking with your fingerprint.",
   "firstRun.fingerprintTitle": "Setup Fingerprint Reader",
-  "firstRun.gitBody": "Identification for code commits",
+  "firstRun.gitBody": "Identification for code commits.",
   "firstRun.gitTitle": "Setup Git",
   "firstRun.keybindingsBody": "Super + K for cheatsheet.\nSuper + Space for Omarchy Menu.",
   "firstRun.keybindingsTitle": "Learn Keybindings",
