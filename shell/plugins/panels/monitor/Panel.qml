@@ -50,6 +50,8 @@ Panel {
   //   "scale"      - the shown display's scale presets.
   //   "resolution" - the resolutions it advertises, when it has more than one
   //                  to offer.
+  //   "refresh"    - the refresh rates its resolution offers, when one is
+  //                  faster than 60Hz.
   //   "layout"     - the arrangement of the displays; h/l moves the shown one
   //                  to the left or right of the rest.
   // Every section is one row: j/k steps between them, h/l moves a slider or
@@ -79,7 +81,9 @@ Panel {
         current: display.width + "x" + display.height,
         scales: scales,
         scaleIndex: Model.matchingScaleIndex(scales, display.scale, display.width, display.height),
-        resolutions: resolutions.length > 1 ? resolutions : []
+        resolutions: resolutions.length > 1 ? resolutions : [],
+        refreshes: Model.refreshOptions(display.availableModes, display.width, display.height),
+        refreshRate: Number(display.refreshRate) || 0
       })
     }
     return list
@@ -164,7 +168,8 @@ Panel {
     list.push("textsize")
     if (current && current.scales.length > 0) list.push("scale")
     if (current && current.resolutions.length > 0) list.push("resolution")
-    if (layoutRects.length > 1) list.push("layout")
+    if (current && current.refreshes.length > 0) list.push("refresh")
+    if (layoutRects.length > 0) list.push("layout")
     return list
   }
 
@@ -172,6 +177,7 @@ Panel {
     if (section === "displays") return segments.length
     if (section === "scale") return current ? current.scales.length : 0
     if (section === "resolution") return current ? current.resolutions.length : 0
+    if (section === "refresh") return current ? current.refreshes.length : 0
     if (section === "layout") return 1
     return 0  // sliders: only the sentinel at -1
   }
@@ -213,7 +219,7 @@ Panel {
       var next = Math.max(0, Math.min(segments.length - 1, currentIndex + delta))
       selectDisplay(segments[next].name)
       selectedIndex = next
-    } else if (focusSection === "scale" || focusSection === "resolution") {
+    } else if (focusSection === "scale" || focusSection === "resolution" || focusSection === "refresh") {
       selectedIndex = Math.max(0, Math.min(sectionCount(focusSection) - 1, selectedIndex + delta))
     } else if (focusSection === "layout" && current) {
       applyLayout(Model.placeDisplay(layoutRects, current.name, delta < 0 ? "left" : "right"))
@@ -226,6 +232,8 @@ Panel {
       setScale(current.name, current.scales[selectedIndex])
     else if (focusSection === "resolution" && selectedIndex >= 0 && selectedIndex < current.resolutions.length)
       setResolution(current.name, current.resolutions[selectedIndex])
+    else if (focusSection === "refresh" && selectedIndex >= 0 && selectedIndex < current.refreshes.length)
+      setResolution(current.name, current.current + "@" + current.refreshes[selectedIndex].rate)
     // The picker, sliders and layout: moving is the action.
   }
 
@@ -389,6 +397,34 @@ Panel {
     if (!actionProc.running) actionProc.running = true
   }
 
+  function setRotation(name, degrees) {
+    actionProc.command = ["omarchy-hyprland-monitor-rotate", "--monitor", name, String(degrees)]
+    if (!actionProc.running) actionProc.running = true
+  }
+
+  // The layout map's right-click menu: the display it's for, where it opened
+  // within the panel, and that display's quarter turn now.
+  property string rotateMenuName: ""
+  property real rotateMenuX: 0
+  property real rotateMenuY: 0
+  readonly property int rotateMenuTransform: {
+    for (var i = 0; i < displays.length; i++)
+      if (displays[i] && displays[i].name === rotateMenuName) return Number(displays[i].transform) || 0
+    return 0
+  }
+
+  // Opens where `item` was clicked, at (x, y) within it, in panel coordinates.
+  function openRotateMenu(name, item, x, y) {
+    var spot = item.mapToItem(panel.loadedContent, x, y)
+    rotateMenuName = name
+    rotateMenuX = spot.x
+    rotateMenuY = spot.y
+  }
+
+  function closeRotateMenu() {
+    rotateMenuName = ""
+  }
+
   // Apply a whole arrangement, unless it leaves everything where it was.
   function applyLayout(rects) {
     if (!rects || Model.sameLayout(rects, Model.normalizeLayout(Model.copyRects(layoutRects)))) return
@@ -447,6 +483,7 @@ Panel {
   // with j/k ready to navigate. Keep a default landing point, but don't paint
   // the cursor until hover or the first navigation key.
   onOpenedChanged: {
+    closeRotateMenu()
     if (opened) {
       refresh()
       selectedName = ""
@@ -588,7 +625,11 @@ Panel {
         else if (dx !== 0) root.moveCursorH(dx)
       }
       onActivateRequested: if (root.cursorActive) root.activateCursor()
-      onCloseRequested: root.close()
+      // Esc closes the rotate menu first, then the panel.
+      onCloseRequested: {
+        if (root.rotateMenuName !== "") root.closeRotateMenu()
+        else root.close()
+      }
       onTabRequested: function(direction) { root.switchPanel(direction) }
 
       ScrollView {
@@ -944,14 +985,77 @@ Panel {
             }
           }
 
-          // ---------- Layout ----------
+          // ---------- Refresh rate ----------
           PanelSeparator {
-            visible: root.layoutRects.length > 1
+            visible: root.current !== null && root.current.refreshes.length > 0
             foreground: root.bar.foreground
           }
 
           Column {
-            visible: root.layoutRects.length > 1
+            visible: root.current !== null && root.current.refreshes.length > 0
+            width: parent.width
+            spacing: Style.space(6) + panelColumn.sliderInset
+            bottomPadding: panelColumn.sliderInset
+
+            Item {
+              width: parent.width
+              implicitHeight: Math.max(refreshHeader.implicitHeight, refreshCurrent.implicitHeight)
+
+              PanelSectionHeader {
+                id: refreshHeader
+                text: Commons.I18n.t("monitor.refreshRate")
+                foreground: root.bar.foreground
+                fontFamily: root.bar.fontFamily
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+              }
+
+              Text {
+                id: refreshCurrent
+                textFormat: Text.PlainText
+                text: root.current ? Commons.I18n.formatNumber(Math.round(root.current.refreshRate)) + " Hz" : ""
+                color: Qt.darker(root.bar.foreground, 1.4)
+                font.family: root.bar.fontFamily
+                font.pixelSize: Style.font.caption
+                font.bold: true
+                anchors.right: parent.right
+                anchors.rightMargin: Style.space(6)
+                anchors.verticalCenter: parent.verticalCenter
+              }
+            }
+
+            Grid {
+              id: refreshGrid
+              width: parent.width
+              columns: Math.max(1, root.current ? root.current.refreshes.length : 1)
+              spacing: Style.spacing.xs
+
+              readonly property real cellWidth: (width - spacing * (columns - 1)) / columns
+
+              Repeater {
+                model: root.current ? root.current.refreshes : []
+
+                RefreshPill {
+                  required property var modelData
+                  required property int index
+
+                  option: modelData
+                  refreshIndex: index
+                  width: refreshGrid.cellWidth
+                }
+              }
+            }
+          }
+
+          // ---------- Layout ----------
+          // Shown for a single display too: right-clicking it is how it's rotated.
+          PanelSeparator {
+            visible: root.layoutRects.length > 0
+            foreground: root.bar.foreground
+          }
+
+          Column {
+            visible: root.layoutRects.length > 0
             width: parent.width
             spacing: Style.space(6)
 
@@ -985,6 +1089,56 @@ Panel {
               // so h/l afterwards moves the shown display instead of the last row.
               HoverHandler {
                 onHoveredChanged: if (hovered) root.pointAt("layout", 0)
+              }
+            }
+          }
+        }
+      }
+
+      // The layout map's right-click menu sits over the scrolling content, so
+      // the panel's edge doesn't clip it near the bottom. A click anywhere
+      // else closes it.
+      MouseArea {
+        anchors.fill: parent
+        visible: root.rotateMenuName !== ""
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        onPressed: root.closeRotateMenu()
+      }
+
+      BorderSurface {
+        id: rotateMenu
+        visible: root.rotateMenuName !== ""
+        width: Math.max(Style.space(140), rotateColumn.implicitWidth) + padding * 2
+        height: rotateColumn.implicitHeight + padding * 2
+        x: Math.max(0, Math.min(root.rotateMenuX, parent.width - width))
+        y: Math.max(0, Math.min(root.rotateMenuY, parent.height - height))
+        radius: Style.cornerRadius
+        color: Commons.Color.popups.background
+        borderSpec: Border.surfaceSpec("popups", "border", Commons.Color.popups.border, Style.normalBorderWidth)
+        padding: Style.spacing.sm
+
+        Column {
+          id: rotateColumn
+          x: rotateMenu.contentLeftInset
+          y: rotateMenu.contentTopInset
+          width: rotateMenu.width - rotateMenu.contentLeftInset - rotateMenu.contentRightInset
+
+          Repeater {
+            model: [
+              [0, Commons.I18n.t("monitor.rotateNormal")],
+              [90, Commons.I18n.t("monitor.rotate90")],
+              [180, Commons.I18n.t("monitor.rotate180")],
+              [270, Commons.I18n.t("monitor.rotate270")]
+            ]
+
+            delegate: PopupMenuRow {
+              required property var modelData
+
+              text: modelData[1]
+              checked: root.rotateMenuTransform === modelData[0] / 90
+              onTriggered: {
+                root.setRotation(root.rotateMenuName, modelData[0])
+                root.closeRotateMenu()
               }
             }
           }
@@ -1033,6 +1187,28 @@ Panel {
 
     onClicked: if (root.current) root.setResolution(root.current.name, resolution)
     onHovered: function(isHovered) { if (isHovered) root.pointAt("resolution", resolutionPill.resolutionIndex) }
+  }
+
+  // A refresh rate at the current resolution, set as that exact mode.
+  component RefreshPill: Button {
+    id: refreshPill
+    required property var option
+    required property int refreshIndex
+
+    text: Commons.I18n.formatNumber(Number(option.label))
+    fontSize: Style.font.caption
+    foreground: root.bar.foreground
+    fontFamily: root.bar.fontFamily
+    horizontalPadding: Style.spacing.sm
+    verticalPadding: Style.spacing.controlPaddingY
+    bordered: true
+
+    active: root.current !== null && Math.round(root.current.refreshRate) === Number(option.label)
+    hasCursor: root.cursorActive && root.focusSection === "refresh" && root.selectedIndex === refreshIndex
+    onHasCursorChanged: if (hasCursor) root.ensureCursorVisible(refreshPill)
+
+    onClicked: if (root.current) root.setResolution(root.current.name, root.current.current + "@" + option.rate)
+    onHovered: function(isHovered) { if (isHovered) root.pointAt("refresh", refreshPill.refreshIndex) }
   }
 
   // The displays drawn where they sit, at their relative sizes. Drag one
@@ -1112,18 +1288,25 @@ Panel {
           hoverEnabled: true
           cursorShape: pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor
           preventStealing: true
+          acceptedButtons: Qt.LeftButton | Qt.RightButton
           onPressed: function(mouse) {
+            // A right click opens the rotate menu where it was made, within the panel.
+            if (mouse.button === Qt.RightButton) {
+              root.openRotateMenu(screenRect.modelData.name, screenRect, mouse.x, mouse.y)
+              return
+            }
             var point = mapToItem(map, mouse.x, mouse.y)
             screenRect.pressX = point.x
             screenRect.pressY = point.y
           }
           onPositionChanged: function(mouse) {
-            if (!pressed) return
+            if (!(pressedButtons & Qt.LeftButton)) return
             var point = mapToItem(map, mouse.x, mouse.y)
             screenRect.dragX = point.x - screenRect.pressX
             screenRect.dragY = point.y - screenRect.pressY
           }
-          onReleased: {
+          onReleased: function(mouse) {
+            if (mouse.button === Qt.RightButton) return
             var moved = Math.abs(screenRect.dragX) + Math.abs(screenRect.dragY) > 3
             if (moved) {
               // Back into layout space; snap within about 8 map pixels.
