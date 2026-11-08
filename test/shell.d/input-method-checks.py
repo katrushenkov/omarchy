@@ -184,11 +184,11 @@ class InputMethodTest(unittest.TestCase):
     with patch.object(setup, "run", return_value=available), patch.object(setup, "live_group", return_value=("Default", "us", [["keyboard-us", ""]])):
       setup.wait_ready("mozc")
 
-  def test_migration_without_a_bus_keeps_written_activation_and_defaults(self):
+  def test_migration_without_a_bus_skips_activation_and_keeps_defaults(self):
     self.seed()
     with patch.object(setup, "run", side_effect=subprocess.CalledProcessError(1, "busctl")):
       setup.configure(argparse.Namespace(seed=False, defaults=True))
-    self.assertTrue((self.home / "data/dbus-1/services/org.fcitx.Fcitx5.service").exists())
+    self.assertFalse((self.home / "data/dbus-1/services/org.fcitx.Fcitx5.service").exists())
 
   def test_live_migration_without_a_bus_does_not_restart_or_rewrite_profile(self):
     self.seed()

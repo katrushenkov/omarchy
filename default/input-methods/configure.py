@@ -136,6 +136,9 @@ def defaults(config_home, fresh=False):
 
 
 def activation_default():
+  # Local: fcitx5 is not used here (omarchy-fcitx5.service is masked), so never
+  # install the per-user D-Bus activation override that routes to that unit.
+  return False
   data_home = Path(os.environ.get("XDG_DATA_HOME") or str(Path.home() / ".local/share"))
   path = data_home / "dbus-1/services/org.fcitx.Fcitx5.service"
   original = read(path)
