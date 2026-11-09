@@ -27,7 +27,6 @@ docker-buildx
 docker-compose
 dosfstools
 dotnet-runtime
-evince
 exfatprogs
 expac
 eza
@@ -114,6 +113,7 @@ omasnap
 owe
 pacman-contrib
 pamixer
+papers
 pinta
 plocate
 plymouth
