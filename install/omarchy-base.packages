@@ -43,6 +43,7 @@ fcitx5-table-extra
 fd
 ffmpeg
 ffmpegthumbnailer
+folio
 fontconfig
 foot
 fzf
@@ -84,12 +85,8 @@ man-db
 mariadb-libs
 mise-bin
 monologue
-moonlight-qt
 mpv
 mpv-mpris
-nautilus
-nautilus-python
-nautilus-image-converter
 gnome-disk-utility
 noto-fonts
 noto-fonts-cjk
@@ -115,6 +112,7 @@ pacman-contrib
 pamixer
 papers
 pinta
+plain
 plocate
 plymouth
 postgresql-libs
@@ -141,7 +139,6 @@ slurp
 socat
 starship
 superwhisper-bin
-sushi
 system-config-printer
 tesseract
 tesseract-data-eng
@@ -168,6 +165,7 @@ woff2-font-awesome
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
 xdg-terminal-exec
+xdg-user-dirs
 yaru-icon-theme
 yay
 yt-dlp
