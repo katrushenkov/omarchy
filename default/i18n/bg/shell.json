@@ -64,7 +64,6 @@
   "agents.localRecommended": "препоръчан",
   "agents.localRemoveConfirm": "Спри %1 и изтрий изтеглените му тегла?",
   "agents.localRemovingMeter": "Премахване",
-  "agents.localShowLogs": "Покажи логовете",
   "agents.localShowLogsTip": "Отвори логовете на този модел в терминал",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Стартирай",
@@ -81,6 +80,8 @@
   "agents.mostlyModel": "Предимно %1",
   "agents.nameAccount": "Назови този профил. Влиза чрез частен прозорец, така че текущият профил в браузъра не се използва.",
   "agents.networkAgo": "преди %1",
+  "agents.networkDisconnect": "Спри да използваш този модел от %1 тук; той продължава да работи там",
+  "agents.networkDisconnectLabel": "Прекъсни връзката",
   "agents.networkHideConfirm": "Скрий %1 на %2 от панела? Добави още един › Мрежови модели ще го покаже отново.",
   "agents.networkHostOffline": "%1 е офлайн",
   "agents.networkHostUnreachable": "%1 не отговаря",
@@ -97,6 +98,10 @@
   "agents.networkSharedLabel": "Споделено",
   "agents.networkStopSharing": "Споделено в tailnet-а ти · спри споделянето",
   "agents.networkStopped": "Спрян",
+  "agents.networkUsers": {
+    "one": "%1 потребител",
+    "other": "%1 потребители"
+  },
   "agents.outOfCredits": "Без кредити",
   "agents.pasteCode": "Ако страницата покаже код вместо да завърши, постави го тук.",
   "agents.placeholderCode": "Код",

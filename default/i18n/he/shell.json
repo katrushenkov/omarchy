@@ -66,7 +66,6 @@
   "agents.localRecommended": "מומלץ",
   "agents.localRemoveConfirm": "לעצור את %1 ולמחוק את המשקולות שהורדו?",
   "agents.localRemovingMeter": "הסרה",
-  "agents.localShowLogs": "הצגת יומנים",
   "agents.localShowLogsTip": "פתיחת יומני מודל זה במסוף",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "הפעלה",
@@ -84,6 +83,8 @@
   "agents.mostlyModel": "בעיקר %1",
   "agents.nameAccount": "תנו שם לחשבון זה. ההתחברות מתבצעת בחלון פרטי, כך שהחשבון הנוכחי בדפדפן לא ייבחר.",
   "agents.networkAgo": "לפני %1",
+  "agents.networkDisconnect": "להפסיק להשתמש במודל הזה מ-%1 כאן; הוא ימשיך לפעול שם",
+  "agents.networkDisconnectLabel": "ניתוק",
   "agents.networkHideConfirm": "להסתיר את %1 ב-%2 מהפאנל? 'הוספת נוסף › מודלי רשת' יציג אותו שוב.",
   "agents.networkHostOffline": "%1 לא מחובר",
   "agents.networkHostUnreachable": "%1 אינו מגיב",
@@ -100,6 +101,11 @@
   "agents.networkSharedLabel": "משותף",
   "agents.networkStopSharing": "משותף ב-tailnet שלך · הפסקת שיתוף",
   "agents.networkStopped": "מופסק",
+  "agents.networkUsers": {
+    "one": "משתמש אחד",
+    "other": "%1 משתמשים",
+    "two": "שני משתמשים"
+  },
   "agents.outOfCredits": "אזלו הקרדיטים",
   "agents.pasteCode": "אם הדף מציג קוד במקום לסיים, הדביקו אותו כאן.",
   "agents.placeholderCode": "קוד",

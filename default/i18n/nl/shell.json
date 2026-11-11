@@ -64,7 +64,6 @@
   "agents.localRecommended": "aanbevolen",
   "agents.localRemoveConfirm": "%1 stoppen en de gedownloade gewichten verwijderen?",
   "agents.localRemovingMeter": "Verwijderen",
-  "agents.localShowLogs": "Logs weergeven",
   "agents.localShowLogsTip": "Open de logs van dit model in een terminal",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Starten",
@@ -81,6 +80,8 @@
   "agents.mostlyModel": "Meestal %1",
   "agents.nameAccount": "Geef dit account een naam. Het meldt zich aan via een privévenster, dus het huidige account van je browser wordt niet overgenomen.",
   "agents.networkAgo": "%1 geleden",
+  "agents.networkDisconnect": "Stop met het gebruik van dit model vanaf %1 hier; het blijft daar draaien",
+  "agents.networkDisconnectLabel": "Loskoppelen",
   "agents.networkHideConfirm": "%1 op %2 uit het paneel verbergen? Nog een toevoegen › Netwerkmodellen toont het weer.",
   "agents.networkHostOffline": "%1 is offline",
   "agents.networkHostUnreachable": "%1 reageert niet",
@@ -97,6 +98,10 @@
   "agents.networkSharedLabel": "Gedeeld",
   "agents.networkStopSharing": "Gedeeld op je tailnet · stoppen met delen",
   "agents.networkStopped": "Gestopt",
+  "agents.networkUsers": {
+    "one": "%1 gebruiker",
+    "other": "%1 gebruikers"
+  },
   "agents.outOfCredits": "Tegoed op",
   "agents.pasteCode": "Als de pagina een code toont in plaats van af te ronden, plak die hier.",
   "agents.placeholderCode": "Code",

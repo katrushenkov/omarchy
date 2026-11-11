@@ -62,7 +62,6 @@
   "agents.localRecommended": "disyorkan",
   "agents.localRemoveConfirm": "Hentikan %1 dan padam pemberat yang dimuat turun?",
   "agents.localRemovingMeter": "Membuang",
-  "agents.localShowLogs": "Papar log",
   "agents.localShowLogsTip": "Buka log model ini dalam terminal",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Mulakan",
@@ -78,6 +77,8 @@
   "agents.mostlyModel": "Kebanyakannya %1",
   "agents.nameAccount": "Namakan akaun ini. Ia log masuk melalui tetingkap peribadi, jadi akaun semasa pelayar anda tidak dipilih.",
   "agents.networkAgo": "%1 lalu",
+  "agents.networkDisconnect": "Berhenti menggunakan model ini daripada %1 di sini; ia tetap berjalan di sana",
+  "agents.networkDisconnectLabel": "Putuskan sambungan",
   "agents.networkHideConfirm": "Sembunyikan %1 pada %2 daripada panel? Tambah lagi › Model rangkaian akan memaparkannya semula.",
   "agents.networkHostOffline": "%1 luar talian",
   "agents.networkHostUnreachable": "%1 tidak menjawab",
@@ -94,6 +95,9 @@
   "agents.networkSharedLabel": "Dikongsi",
   "agents.networkStopSharing": "Dikongsi pada tailnet anda · berhenti berkongsi",
   "agents.networkStopped": "Berhenti",
+  "agents.networkUsers": {
+    "other": "%1 pengguna"
+  },
   "agents.outOfCredits": "Kehabisan kredit",
   "agents.pasteCode": "Jika halaman menunjukkan kod dan bukannya selesai, tampalkannya di sini.",
   "agents.placeholderCode": "Kod",

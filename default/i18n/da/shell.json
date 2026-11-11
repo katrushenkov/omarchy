@@ -64,7 +64,6 @@
   "agents.localRecommended": "anbefalet",
   "agents.localRemoveConfirm": "Stop %1, og slet dens downloadede vægte?",
   "agents.localRemovingMeter": "Fjerner",
-  "agents.localShowLogs": "Vis logfiler",
   "agents.localShowLogsTip": "Åbn denne models logfiler i en terminal",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Start",
@@ -81,6 +80,8 @@
   "agents.mostlyModel": "Mest %1",
   "agents.nameAccount": "Navngiv denne konto. Den logger ind gennem et privat vindue, så din browsers nuværende konto ikke overtages.",
   "agents.networkAgo": "for %1 siden",
+  "agents.networkDisconnect": "Stop med at bruge denne model fra %1 her; den kører fortsat der",
+  "agents.networkDisconnectLabel": "Afbryd forbindelse",
   "agents.networkHideConfirm": "Skjul %1 på %2 fra panelet? Tilføj en mere › Netværksmodeller viser den igen.",
   "agents.networkHostOffline": "%1 er offline",
   "agents.networkHostUnreachable": "%1 svarer ikke",
@@ -97,6 +98,10 @@
   "agents.networkSharedLabel": "Delt",
   "agents.networkStopSharing": "Delt på dit tailnet · stop deling",
   "agents.networkStopped": "Stoppet",
+  "agents.networkUsers": {
+    "one": "%1 bruger",
+    "other": "%1 brugere"
+  },
   "agents.outOfCredits": "Kreditter opbrugt",
   "agents.pasteCode": "Hvis siden viser en kode i stedet for at fuldføre, så indsæt den her.",
   "agents.placeholderCode": "Kode",

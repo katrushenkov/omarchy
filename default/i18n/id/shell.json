@@ -62,7 +62,6 @@
   "agents.localRecommended": "disarankan",
   "agents.localRemoveConfirm": "Hentikan %1 dan hapus bobot unduhannya?",
   "agents.localRemovingMeter": "Menghapus",
-  "agents.localShowLogs": "Tampilkan log",
   "agents.localShowLogsTip": "Buka log model ini di terminal",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Mulai",
@@ -78,6 +77,8 @@
   "agents.mostlyModel": "Umumnya %1",
   "agents.nameAccount": "Beri nama akun ini. Akun masuk melalui jendela pribadi, jadi akun peramban Anda saat ini tidak ikut terpakai.",
   "agents.networkAgo": "%1 yang lalu",
+  "agents.networkDisconnect": "Berhenti menggunakan model ini dari %1 di sini; model tetap berjalan di sana",
+  "agents.networkDisconnectLabel": "Putuskan",
   "agents.networkHideConfirm": "Sembunyikan %1 di %2 dari panel? Tambahkan lagi › Model jaringan akan menampilkannya lagi.",
   "agents.networkHostOffline": "%1 luring",
   "agents.networkHostUnreachable": "%1 tidak merespons",
@@ -94,6 +95,9 @@
   "agents.networkSharedLabel": "Dibagikan",
   "agents.networkStopSharing": "Dibagikan di tailnet Anda · berhenti berbagi",
   "agents.networkStopped": "Berhenti",
+  "agents.networkUsers": {
+    "other": "%1 pengguna"
+  },
   "agents.outOfCredits": "Kredit habis",
   "agents.pasteCode": "Jika halaman menampilkan kode alih-alih selesai, tempelkan di sini.",
   "agents.placeholderCode": "Kode",

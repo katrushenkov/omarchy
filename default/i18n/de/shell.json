@@ -64,7 +64,6 @@
   "agents.localRecommended": "empfohlen",
   "agents.localRemoveConfirm": "%1 stoppen und die heruntergeladenen Gewichte löschen?",
   "agents.localRemovingMeter": "Wird entfernt",
-  "agents.localShowLogs": "Logs anzeigen",
   "agents.localShowLogsTip": "Logs dieses Modells in einem Terminal öffnen",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Starten",
@@ -81,6 +80,8 @@
   "agents.mostlyModel": "Meist %1",
   "agents.nameAccount": "Benenne dieses Konto. Es meldet sich über ein privates Fenster an, sodass das aktuelle Konto deines Browsers nicht übernommen wird.",
   "agents.networkAgo": "vor %1",
+  "agents.networkDisconnect": "Dieses Modell von %1 hier nicht mehr verwenden; es läuft dort weiter",
+  "agents.networkDisconnectLabel": "Trennen",
   "agents.networkHideConfirm": "%1 auf %2 aus dem Panel ausblenden? „Weiteres hinzufügen › Netzwerkmodelle“ zeigt es wieder an.",
   "agents.networkHostOffline": "%1 ist offline",
   "agents.networkHostUnreachable": "%1 antwortet nicht",
@@ -97,6 +98,10 @@
   "agents.networkSharedLabel": "Freigegeben",
   "agents.networkStopSharing": "Im Tailnet freigegeben · Freigabe beenden",
   "agents.networkStopped": "Gestoppt",
+  "agents.networkUsers": {
+    "one": "%1 Benutzer",
+    "other": "%1 Benutzer"
+  },
   "agents.outOfCredits": "Keine Credits mehr",
   "agents.pasteCode": "Falls die Seite einen Code zeigt statt abzuschließen, füge ihn hier ein.",
   "agents.placeholderCode": "Code",

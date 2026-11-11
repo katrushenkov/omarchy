@@ -64,7 +64,6 @@
   "agents.localRecommended": "suositeltu",
   "agents.localRemoveConfirm": "Pysäytä %1 ja poista sen ladatut painot?",
   "agents.localRemovingMeter": "Poistetaan",
-  "agents.localShowLogs": "Näytä lokit",
   "agents.localShowLogsTip": "Avaa tämän mallin lokit terminaalissa",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Käynnistä",
@@ -81,6 +80,8 @@
   "agents.mostlyModel": "Enimmäkseen %1",
   "agents.nameAccount": "Nimeä tämä tili. Se kirjautuu yksityisen ikkunan kautta, joten selaimesi nykyistä tiliä ei käytetä.",
   "agents.networkAgo": "%1 sitten",
+  "agents.networkDisconnect": "Lopeta tämän mallin käyttö %1:stä täällä; se jää käyntiin siellä",
+  "agents.networkDisconnectLabel": "Katkaise yhteys",
   "agents.networkHideConfirm": "Piilota %1 koneella %2 paneelista? Lisää toinen › Verkkomallit näyttää sen uudelleen.",
   "agents.networkHostOffline": "%1 ei ole verkossa",
   "agents.networkHostUnreachable": "%1 ei vastaa",
@@ -97,6 +98,10 @@
   "agents.networkSharedLabel": "Jaettu",
   "agents.networkStopSharing": "Jaettu tailnetissäsi · lopeta jakaminen",
   "agents.networkStopped": "Pysäytetty",
+  "agents.networkUsers": {
+    "one": "%1 käyttäjä",
+    "other": "%1 käyttäjää"
+  },
   "agents.outOfCredits": "Krediitit loppu",
   "agents.pasteCode": "Jos sivu näyttää koodin valmistumisen sijaan, liitä se tähän.",
   "agents.placeholderCode": "Koodi",

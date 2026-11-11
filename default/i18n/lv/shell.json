@@ -66,7 +66,6 @@
   "agents.localRecommended": "ieteicams",
   "agents.localRemoveConfirm": "Apturēt %1 un dzēst tā lejupielādētos svarus?",
   "agents.localRemovingMeter": "Noņem",
-  "agents.localShowLogs": "Rādīt žurnālus",
   "agents.localShowLogsTip": "Atvērt šī modeļa žurnālus terminālī",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Palaist",
@@ -84,6 +83,8 @@
   "agents.mostlyModel": "Galvenokārt %1",
   "agents.nameAccount": "Nosauc šo kontu. Tas pierakstās privātā logā, tāpēc tava pārlūka pašreizējais konts netiek pārņemts.",
   "agents.networkAgo": "pirms %1",
+  "agents.networkDisconnect": "Pārtraukt šī modeļa lietošanu no %1 šeit; tas tur turpina darboties",
+  "agents.networkDisconnectLabel": "Atvienot",
   "agents.networkHideConfirm": "Paslēpt %1 uz %2 no paneļa? Pievienot vēl vienu › Tīkla modeļi to atkal parādīs.",
   "agents.networkHostOffline": "%1 ir bezsaistē",
   "agents.networkHostUnreachable": "%1 neatbild",
@@ -100,6 +101,11 @@
   "agents.networkSharedLabel": "Kopīgots",
   "agents.networkStopSharing": "Kopīgots savā tailnet tīklā · pārtraukt kopīgošanu",
   "agents.networkStopped": "Apturēts",
+  "agents.networkUsers": {
+    "one": "%1 lietotājs",
+    "other": "%1 lietotāji",
+    "zero": "%1 lietotāju"
+  },
   "agents.outOfCredits": "Nav kredītu",
   "agents.pasteCode": "Ja lapa pabeigšanas vietā parāda kodu, ielīmē to šeit.",
   "agents.placeholderCode": "Kods",

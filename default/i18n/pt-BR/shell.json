@@ -66,7 +66,6 @@
   "agents.localRecommended": "recomendado",
   "agents.localRemoveConfirm": "Parar %1 e excluir seus pesos baixados?",
   "agents.localRemovingMeter": "Removendo",
-  "agents.localShowLogs": "Mostrar logs",
   "agents.localShowLogsTip": "Abrir os logs deste modelo em um terminal",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Iniciar",
@@ -84,6 +83,8 @@
   "agents.mostlyModel": "Principalmente %1",
   "agents.nameAccount": "Dê um nome a esta conta. Ela entra por uma janela privada, então a conta atual do navegador não é usada.",
   "agents.networkAgo": "há %1",
+  "agents.networkDisconnect": "Parar de usar este modelo de %1 aqui; ele continuará em execução lá",
+  "agents.networkDisconnectLabel": "Desconectar",
   "agents.networkHideConfirm": "Ocultar %1 em %2 do painel? Adicionar outro › Modelos de rede o mostra novamente.",
   "agents.networkHostOffline": "%1 está offline",
   "agents.networkHostUnreachable": "%1 não está respondendo",
@@ -100,6 +101,11 @@
   "agents.networkSharedLabel": "Compartilhado",
   "agents.networkStopSharing": "Compartilhado na sua tailnet · parar de compartilhar",
   "agents.networkStopped": "Parado",
+  "agents.networkUsers": {
+    "many": "%1 usuários",
+    "one": "%1 usuário",
+    "other": "%1 usuários"
+  },
   "agents.outOfCredits": "Sem créditos",
   "agents.pasteCode": "Se a página mostrar um código em vez de concluir, cole-o aqui.",
   "agents.placeholderCode": "Código",

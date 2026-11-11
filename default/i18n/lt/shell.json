@@ -66,7 +66,6 @@
   "agents.localRecommended": "rekomenduojamas",
   "agents.localRemoveConfirm": "Sustabdyti %1 ir ištrinti jo atsisiųstus svorius?",
   "agents.localRemovingMeter": "Šalinama",
-  "agents.localShowLogs": "Rodyti žurnalus",
   "agents.localShowLogsTip": "Atidaryti šio modelio žurnalus terminale",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Paleisti",
@@ -84,6 +83,8 @@
   "agents.mostlyModel": "Daugiausia %1",
   "agents.nameAccount": "Pavadinkite šią paskyrą. Ji prisijungia per privatų langą, todėl naršyklės dabartinė paskyra nepasirenkama.",
   "agents.networkAgo": "prieš %1",
+  "agents.networkDisconnect": "Nebenaudoti šio modelio iš %1 čia; ten jis veiks toliau",
+  "agents.networkDisconnectLabel": "Atjungti",
   "agents.networkHideConfirm": "Paslėpti %1 įrenginyje %2 iš skydelio? Funkcija Pridėti dar vieną › Tinklo modeliai jį vėl parodys.",
   "agents.networkHostOffline": "%1 neprisijungęs",
   "agents.networkHostUnreachable": "%1 neatsako",
@@ -100,6 +101,11 @@
   "agents.networkSharedLabel": "Bendrinamas",
   "agents.networkStopSharing": "Bendrinamas jūsų tailnet · nebebendrinti",
   "agents.networkStopped": "Sustabdytas",
+  "agents.networkUsers": {
+    "few": "%1 naudotojai",
+    "one": "%1 naudotojas",
+    "other": "%1 naudotojų"
+  },
   "agents.outOfCredits": "Baigėsi kreditai",
   "agents.pasteCode": "Jei puslapis vietoj užbaigimo rodo kodą, įklijuokite jį čia.",
   "agents.placeholderCode": "Kodas",

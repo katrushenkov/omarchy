@@ -62,7 +62,6 @@
   "agents.localRecommended": "おすすめ",
   "agents.localRemoveConfirm": "%1 を停止し、ダウンロードした重みを削除しますか？",
   "agents.localRemovingMeter": "削除中",
-  "agents.localShowLogs": "ログを表示",
   "agents.localShowLogsTip": "このモデルのログをターミナルで開く",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "起動",
@@ -78,6 +77,8 @@
   "agents.mostlyModel": "主に %1",
   "agents.nameAccount": "このアカウントに名前を付けます。プライベートウィンドウでサインインするため、ブラウザの現在のアカウントは使用されません。",
   "agents.networkAgo": "%1前",
+  "agents.networkDisconnect": "%1 のこのモデルをここでは使用しなくなります。向こうでは引き続き実行中です",
+  "agents.networkDisconnectLabel": "切断",
   "agents.networkHideConfirm": "パネルから %2 上の %1 を非表示にしますか？もう1つ追加 › ネットワークモデルで再表示できます。",
   "agents.networkHostOffline": "%1 はオフライン",
   "agents.networkHostUnreachable": "%1 が応答しません",
@@ -94,6 +95,9 @@
   "agents.networkSharedLabel": "共有済み",
   "agents.networkStopSharing": "tailnet で共有中 · 共有を停止",
   "agents.networkStopped": "停止中",
+  "agents.networkUsers": {
+    "other": "%1 ユーザー"
+  },
   "agents.outOfCredits": "クレジット不足",
   "agents.pasteCode": "完了せずにコードが表示された場合は、ここに貼り付けてください。",
   "agents.placeholderCode": "コード",

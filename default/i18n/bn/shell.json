@@ -64,7 +64,6 @@
   "agents.localRecommended": "প্রস্তাবিত",
   "agents.localRemoveConfirm": "%1 বন্ধ করে এর ডাউনলোড করা ওয়েট মুছে ফেলবেন?",
   "agents.localRemovingMeter": "সরানো হচ্ছে",
-  "agents.localShowLogs": "লগ দেখুন",
   "agents.localShowLogsTip": "টার্মিনালে এই মডেলের লগ খুলুন",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "চালু করুন",
@@ -81,6 +80,8 @@
   "agents.mostlyModel": "মূলত %1",
   "agents.nameAccount": "এই অ্যাকাউন্টের নাম দিন। এটি একটি ব্যক্তিগত উইন্ডো দিয়ে সাইন-ইন করে, তাই ব্রাউজারের বর্তমান অ্যাকাউন্টটি ব্যবহার হবে না।",
   "agents.networkAgo": "%1 আগে",
+  "agents.networkDisconnect": "এখানে %1 থেকে এই মডেল ব্যবহার বন্ধ করুন; ওখানে এটি চলতে থাকবে",
+  "agents.networkDisconnectLabel": "সংযোগ বিচ্ছিন্ন করুন",
   "agents.networkHideConfirm": "প্যানেল থেকে %2-এ থাকা %1 লুকাবেন? আরেকটি যোগ করুন › নেটওয়ার্ক মডেল আবার দেখাবে।",
   "agents.networkHostOffline": "%1 অফলাইন",
   "agents.networkHostUnreachable": "%1 সাড়া দিচ্ছে না",
@@ -97,6 +98,10 @@
   "agents.networkSharedLabel": "শেয়ার করা",
   "agents.networkStopSharing": "আপনার tailnet-এ শেয়ার করা আছে · শেয়ার বন্ধ করুন",
   "agents.networkStopped": "বন্ধ",
+  "agents.networkUsers": {
+    "one": "%1 জন ব্যবহারকারী",
+    "other": "%1 জন ব্যবহারকারী"
+  },
   "agents.outOfCredits": "ক্রেডিট শেষ",
   "agents.pasteCode": "পেজে শেষ হওয়ার বদলে কোড দেখালে এখানে পেস্ট করুন।",
   "agents.placeholderCode": "কোড",

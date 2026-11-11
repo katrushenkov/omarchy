@@ -688,9 +688,6 @@
   "install.service.microsoft": {
     "label": "Microsoft"
   },
-  "install.service.chromium-account": {
-    "label": "Chromium 帳號"
-  },
   "install.editor.vscode": {
     "label": "VSCode"
   },
@@ -1327,5 +1324,11 @@
   },
   "agent.make.app": {
     "label": "製作應用程式"
+  },
+  "install.browser.chromium": {
+    "label": "Chromium"
+  },
+  "remove.browser.chromium": {
+    "label": "Chromium"
   }
 }

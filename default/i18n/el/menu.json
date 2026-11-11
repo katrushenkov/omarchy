@@ -688,9 +688,6 @@
   "install.service.microsoft": {
     "label": "Microsoft"
   },
-  "install.service.chromium-account": {
-    "label": "Λογαριασμός Chromium"
-  },
   "install.editor.vscode": {
     "label": "VSCode"
   },
@@ -1327,5 +1324,11 @@
   },
   "agent.make.app": {
     "label": "Φτιάξε εφαρμογή"
+  },
+  "install.browser.chromium": {
+    "label": "Chromium"
+  },
+  "remove.browser.chromium": {
+    "label": "Chromium"
   }
 }

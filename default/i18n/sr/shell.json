@@ -66,7 +66,6 @@
   "agents.localRecommended": "препоручено",
   "agents.localRemoveConfirm": "Зауставити %1 и избрисати његове преузете тежине?",
   "agents.localRemovingMeter": "Уклањање",
-  "agents.localShowLogs": "Прикажи дневнике",
   "agents.localShowLogsTip": "Отвори дневнике овог модела у терминалу",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Покрени",
@@ -84,6 +83,8 @@
   "agents.mostlyModel": "Углавном %1",
   "agents.nameAccount": "Именујте овај налог. Пријављује се кроз приватни прозор, па се тренутни налог прегледача не преузима.",
   "agents.networkAgo": "пре %1",
+  "agents.networkDisconnect": "Престани да користиш овај модел са %1 овде; тамо и даље ради",
+  "agents.networkDisconnectLabel": "Прекини везу",
   "agents.networkHideConfirm": "Сакрити %1 на %2 са панела? „Додај још › Мрежни модели“ га поново приказује.",
   "agents.networkHostOffline": "%1 је ван мреже",
   "agents.networkHostUnreachable": "%1 не одговара",
@@ -100,6 +101,11 @@
   "agents.networkSharedLabel": "Дељено",
   "agents.networkStopSharing": "Дељено на tailnet-у · Заустави дељење",
   "agents.networkStopped": "Заустављено",
+  "agents.networkUsers": {
+    "few": "%1 корисника",
+    "one": "%1 корисник",
+    "other": "%1 корисника"
+  },
   "agents.outOfCredits": "Нема кредита",
   "agents.pasteCode": "Ако страница прикаже код уместо да заврши, налепите га овде.",
   "agents.placeholderCode": "Код",

@@ -66,7 +66,6 @@
   "agents.localRecommended": "recomanat",
   "agents.localRemoveConfirm": "Atura %1 i elimina els pesos descarregats?",
   "agents.localRemovingMeter": "Eliminant",
-  "agents.localShowLogs": "Mostra els registres",
   "agents.localShowLogsTip": "Obre els registres d'aquest model en un terminal",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Inicia",
@@ -84,6 +83,8 @@
   "agents.mostlyModel": "Sobretot %1",
   "agents.nameAccount": "Posa nom a aquest compte. Inicia sessió en una finestra privada, de manera que no s'agafa el compte actual del navegador.",
   "agents.networkAgo": "fa %1",
+  "agents.networkDisconnect": "Deixa d'utilitzar aquest model de %1 aquí; seguirà executant-se allà",
+  "agents.networkDisconnectLabel": "Desconnecta",
   "agents.networkHideConfirm": "Amaga %1 de %2 del panell? Afegeix-ne un altre › Models de xarxa el tornarà a mostrar.",
   "agents.networkHostOffline": "%1 està fora de línia",
   "agents.networkHostUnreachable": "%1 no respon",
@@ -100,6 +101,11 @@
   "agents.networkSharedLabel": "Compartit",
   "agents.networkStopSharing": "Compartit a la teva tailnet · deixa de compartir",
   "agents.networkStopped": "Aturat",
+  "agents.networkUsers": {
+    "many": "%1 usuaris",
+    "one": "%1 usuari",
+    "other": "%1 usuaris"
+  },
   "agents.outOfCredits": "Sense crèdits",
   "agents.pasteCode": "Si la pàgina mostra un codi en comptes d'acabar, enganxa'l aquí.",
   "agents.placeholderCode": "Codi",

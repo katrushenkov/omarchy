@@ -688,9 +688,6 @@
   "install.service.microsoft": {
     "label": "Microsoft"
   },
-  "install.service.chromium-account": {
-    "label": "Cuenta de Chromium"
-  },
   "install.editor.vscode": {
     "label": "VSCode"
   },
@@ -1327,5 +1324,11 @@
   },
   "agent.make.app": {
     "label": "Crear una app"
+  },
+  "install.browser.chromium": {
+    "label": "Chromium"
+  },
+  "remove.browser.chromium": {
+    "label": "Chromium"
   }
 }

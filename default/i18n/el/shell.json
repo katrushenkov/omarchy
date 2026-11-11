@@ -64,7 +64,6 @@
   "agents.localRecommended": "προτεινόμενο",
   "agents.localRemoveConfirm": "Διακοπή του %1 και διαγραφή των βαρών που κατεβάστηκαν;",
   "agents.localRemovingMeter": "Αφαίρεση",
-  "agents.localShowLogs": "Δείξε τις καταγραφές",
   "agents.localShowLogsTip": "Άνοιξε τις καταγραφές αυτού του μοντέλου σε τερματικό",
   "agents.localSpeedFact": "%1 TPS",
   "agents.localStart": "Έναρξη",
@@ -81,6 +80,8 @@
   "agents.mostlyModel": "Κυρίως %1",
   "agents.nameAccount": "Δώσε όνομα σε αυτόν τον λογαριασμό. Συνδέεται μέσα από ιδιωτικό παράθυρο, οπότε δεν χρησιμοποιείται ο τρέχων λογαριασμός του περιηγητή σου.",
   "agents.networkAgo": "πριν από %1",
+  "agents.networkDisconnect": "Σταμάτα να χρησιμοποιείς αυτό το μοντέλο από το %1 εδώ· συνεχίζει να εκτελείται εκεί",
+  "agents.networkDisconnectLabel": "Αποσύνδεση",
   "agents.networkHideConfirm": "Απόκρυψη του %1 στο %2 από το πάνελ; Το Πρόσθεσε άλλο › Μοντέλα δικτύου το εμφανίζει ξανά.",
   "agents.networkHostOffline": "Το %1 είναι εκτός σύνδεσης",
   "agents.networkHostUnreachable": "Το %1 δεν αποκρίνεται",
@@ -97,6 +98,10 @@
   "agents.networkSharedLabel": "Κοινόχρηστο",
   "agents.networkStopSharing": "Κοινόχρηστο στο tailnet σου · σταμάτα την κοινή χρήση",
   "agents.networkStopped": "Σταματημένο",
+  "agents.networkUsers": {
+    "one": "%1 χρήστης",
+    "other": "%1 χρήστες"
+  },
   "agents.outOfCredits": "Εξαντλήθηκαν οι πιστώσεις",
   "agents.pasteCode": "Αν η σελίδα δείχνει κωδικό αντί να ολοκληρώσει, επικόλλησέ τον εδώ.",
   "agents.placeholderCode": "Κωδικός",
