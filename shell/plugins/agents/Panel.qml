@@ -6,6 +6,7 @@ import qs.Commons
 import qs.Commons as Commons
 import qs.Ui
 import "../panels/elsewhen/Model.js" as Reorder
+import "../panels/tailscale" as Tailscale
 
 Panel {
   id: root
@@ -503,13 +504,11 @@ Panel {
   readonly property var addRows: addStage === "network" ? networkAddModels : localAddRecipes
 
   // What a running network model is, in place of the memory meter its host
-  // measures: its architecture, its measured speeds there, and its context.
+  // measures: its output speed there, and its context.
   function remoteStats(model) {
     var facts = []
-    if (model.architecture === "moe") facts.push(Commons.I18n.t("agents.localMoe"))
-    else if (model.architecture === "dense") facts.push(Commons.I18n.t("agents.localDense"))
-    if (Number(model.decode_tok_s) > 0) facts.push(Commons.I18n.t("agents.localSpeedFact").arg(Commons.I18n.formatNumber(Math.round(Number(model.decode_tok_s)), 0)))
-    if (Number(model.prefill_tok_s) > 0) facts.push(Commons.I18n.t("agents.localPrefillFact").arg(Commons.I18n.formatNumber(Math.round(Number(model.prefill_tok_s)), 0)))
+    var decode = Math.round(Number(model.decode_tok_s))
+    if (decode > 0) facts.push(Commons.I18n.t("agents.localSpeedFact").arg(Commons.I18n.formatNumber(decode, 0)))
     if (Number(model.ctx) > 0) facts.push(Commons.I18n.t("agents.localContextFact").arg(Commons.I18n.formatNumber(Math.round(Number(model.ctx) / 1024), 0)))
     return facts.join(" · ")
   }
@@ -518,7 +517,7 @@ Panel {
     var facts = [Commons.I18n.t("agents.networkOnHost").arg(model.host)]
     if (Number(model.ctx) > 0) facts.push(Commons.I18n.t("agents.localContextFact").arg(Commons.I18n.formatNumber(Math.round(Number(model.ctx) / 1024), 0)))
     facts.push(model.offline ? Commons.I18n.t("agents.networkOffline")
-      : model.unit === "active" ? Commons.I18n.t("agents.networkRunning") : Commons.I18n.t("agents.networkStopped"))
+      : model.unit === "active" ? Commons.I18n.t("agents.networkRunning") : Commons.I18n.t("agents.localLoadingMeter"))
     return facts.join(" · ")
   }
 
@@ -552,8 +551,6 @@ Panel {
   function recipeFacts(recipe) {
     if (recipe.link) return Commons.I18n.t("agents.linkSetUp")
     var facts = []
-    if (recipe.architecture === "moe") facts.push(Commons.I18n.t("agents.localMoe"))
-    else if (recipe.architecture === "dense") facts.push(Commons.I18n.t("agents.localDense"))
     if (recipe.memory_gib != null) facts.push(Commons.I18n.t("agents.localMemoryFact").arg(Commons.I18n.formatNumber(recipe.memory_gib, 0)))
     if (recipe.context != null) facts.push(Commons.I18n.t("agents.localContextFact").arg(Commons.I18n.formatNumber(Math.round(recipe.context / 1024), 0)))
     if (recipe.decode_tok_s != null) facts.push(Commons.I18n.t("agents.localSpeedFact").arg(Commons.I18n.formatNumber(Math.round(recipe.decode_tok_s), 0)))
@@ -2053,7 +2050,7 @@ Panel {
         anchors.leftMargin: Style.space(10)
         anchors.verticalCenter: parent.verticalCenter
         textFormat: Text.PlainText
-        width: section.model || section.offer ? Math.max(0, Math.min(implicitWidth, sectionHead.width - sectionMark.width - sectionPlan.implicitWidth - (localShare.visible ? localShare.width : 0) - (remotePair.visible ? remotePair.width : 0) - (localToggle.visible ? localToggle.width : 0) - (sectionLaunch.visible ? sectionLaunch.width : 0) - Style.space(44))) : implicitWidth
+        width: section.model || section.offer ? Math.max(0, Math.min(implicitWidth, sectionHead.width - sectionMark.width - sectionPlan.implicitWidth - (localShare.visible ? localShare.width : 0) - (remotePair.visible ? remotePair.width : 0) - (remoteDisconnect.visible ? remoteDisconnect.width : 0) - (localToggle.visible ? localToggle.width : 0) - (sectionLaunch.visible ? sectionLaunch.width : 0) - Style.space(44))) : implicitWidth
         elide: Text.ElideRight
         text: section.model ? (section.model.name || section.model.recipe)
           : section.offer ? (section.offer.link ? root.linkTitle(section.offer.link) : (section.offer.name || section.offer.id))
@@ -2094,40 +2091,66 @@ Panel {
       }
 
       // Shares this machine's running model with the tailnet, or stops
-      // sharing it: Share while private, Shared while shared, in the icons'
-      // color. Shown only while the model runs, where Tailscale can serve it
-      // or it's shared already; a stopped shared model is shared again on start.
-      TextLink {
+      // sharing it: the Tailscale mark, dim while private and in the icons'
+      // color while shared, when its tooltip counts the machines using it.
+      // Shown only while the model runs, where Tailscale can serve it or it's
+      // shared already; a stopped shared model is shared again on start.
+      PanelActionButton {
         id: localShare
         anchors.right: localToggle.visible ? localToggle.left : sectionLaunch.visible ? sectionLaunch.left : parent.right
-        anchors.rightMargin: localToggle.visible || sectionLaunch.visible ? Style.space(8) : 0
+        anchors.rightMargin: localToggle.visible || sectionLaunch.visible ? Style.space(4) : 0
         anchors.verticalCenter: parent.verticalCenter
         readonly property bool shared: !!section.model && section.model.shared === true
         visible: !!section.model && !section.remote && !section.removing && !section.installing && section.running && (shared || usage.canShare)
-        // Shared reads as how many machines are using it, once any are.
         readonly property int users: shared ? (usage.shareClients[section.model.recipe] || 0) : 0
-        text: users > 0 ? Commons.I18n.tn("agents.networkUsers", users).arg(Commons.I18n.formatNumber(users))
-          : shared ? Commons.I18n.t("agents.networkSharedLabel") : Commons.I18n.t("agents.networkShareLabel")
-        tooltip: shared ? Commons.I18n.t("agents.networkStopSharing") : Commons.I18n.t("agents.networkShare")
-        idleColor: root.foreground
-        picked: root.hasKey("modelShare", section.providerIndex)
+        tooltipText: users > 0 ? Commons.I18n.tn("agents.networkSharedUsers", users).arg(Commons.I18n.formatNumber(users))
+          : shared ? Commons.I18n.t("agents.networkStopSharing") : Commons.I18n.t("agents.networkShare")
+        foreground: root.foreground
+        fontFamily: root.fontFamily
+        hasCursor: root.hasKey("modelShare", section.providerIndex)
+        onHasCursorChanged: if (hasCursor) root.revealItem(localShare)
         onClicked: root.runLocalAction(section.model, "share")
+
+        Tailscale.TailscaleIcon {
+          anchors.centerIn: parent
+          // The mark fills its box where a font glyph leaves padding around
+          // its ink, so it's drawn smaller to sit no larger than the pause.
+          iconSize: Math.round(Style.font.icon * 0.7)
+          color: localShare.shared || localShare._hot ? root.foreground : root.dim
+        }
       }
 
-      // A network model this machine isn't paired with yet: the word Pair,
-      // which opens a terminal to pair over SSH. Once paired and running
-      // there: Disconnect, which stops using just this model here.
-      TextLink {
+      // A network model this machine isn't paired with yet: the play a local
+      // model starts with, which opens a terminal to pair over SSH.
+      PanelActionButton {
         id: remotePair
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        visible: section.remote && !section.offline && !section.paired
+        iconText: "󰐊"
+        tooltipText: section.remote ? Commons.I18n.t("agents.networkPair").arg(section.model.host) : ""
+        foreground: root.foreground
+        fontFamily: root.fontFamily
+        hasCursor: root.hasKey("modelPair", section.providerIndex)
+        onHasCursorChanged: if (hasCursor) root.revealItem(remotePair)
+        onClicked: root.runLocalAction(section.model, "pair")
+      }
+
+      // Once paired and running there: the pause a local model stops with,
+      // which stops using just this model here.
+      PanelActionButton {
+        id: remoteDisconnect
         anchors.right: sectionLaunch.visible ? sectionLaunch.left : parent.right
         anchors.rightMargin: sectionLaunch.visible ? Style.space(4) : 0
         anchors.verticalCenter: parent.verticalCenter
-        visible: section.remote && !section.offline && (!section.paired || section.model.unit === "active")
-        text: section.paired ? Commons.I18n.t("agents.networkDisconnectLabel") : Commons.I18n.t("agents.networkPairLabel")
-        tooltip: !section.remote ? "" : section.paired ? Commons.I18n.t("agents.networkDisconnect").arg(section.model.host) : Commons.I18n.t("agents.networkPair").arg(section.model.host)
-        idleColor: root.foreground
-        picked: root.hasKey(section.paired ? "modelDisconnect" : "modelPair", section.providerIndex)
-        onClicked: root.runLocalAction(section.model, section.paired ? "disconnect" : "pair")
+        visible: section.remote && !section.offline && section.paired && section.model.unit === "active"
+        iconText: "󰏤"
+        tooltipText: section.remote ? Commons.I18n.t("agents.networkDisconnect").arg(section.model.host) : ""
+        foreground: root.foreground
+        fontFamily: root.fontFamily
+        hasCursor: root.hasKey("modelDisconnect", section.providerIndex)
+        onHasCursorChanged: if (hasCursor) root.revealItem(remoteDisconnect)
+        onClicked: root.runLocalAction(section.model, "disconnect")
       }
 
       PanelActionButton {
@@ -2287,19 +2310,7 @@ Panel {
       wrapMode: Text.Wrap
     }
 
-    // Why a model stopped. On this machine, the reason itself links to its
-    // logs; a tailnet model's logs live on its host, so there it's just text.
-    Text {
-      visible: section.remote && !section.offline && !section.running && !section.loadingShown && !section.stoppingShown && !section.removing && String(section.model.error || "") !== ""
-      width: parent.width
-      textFormat: Text.PlainText
-      text: section.remote ? String(section.model.error || "") : ""
-      color: root.urgent
-      font.family: root.fontFamily
-      font.pixelSize: Style.font.bodySmall
-      wrapMode: Text.Wrap
-    }
-
+    // Why a model on this machine stopped, which links to its logs.
     TextLink {
       visible: !!section.model && !section.remote && !section.running && !section.loadingShown && !section.stoppingShown && !section.removing && String(section.model.error || "") !== ""
       width: Math.min(implicitWidth, parent.width)
