@@ -269,6 +269,8 @@ machine() {
     vivobook-s16-not-qualcomm) vivobook_s16; FAKE_PLATFORM=aarch64 ;;
     omnibook-x14) dmi sys_vendor HP; dmi product_name "HP OmniBook X Laptop 14-fe0xxx"; FAKE_PLATFORM=aarch64-qualcomm ;;
     omnibook-x14-not-qualcomm) dmi sys_vendor HP; dmi product_name "HP OmniBook X Laptop 14-fe0xxx"; FAKE_PLATFORM=aarch64 ;;
+    ideacentre-mini) dmi sys_vendor LENOVO; dmi product_name 91B6001CUK; dmi product_family "IdeaCentre Mini 01Q8X10"; FAKE_PLATFORM=aarch64-qualcomm ;;
+    ideacentre-mini-not-qualcomm) dmi sys_vendor LENOVO; dmi product_name 91B6001CUK; dmi product_family "IdeaCentre Mini 01Q8X10"; FAKE_PLATFORM=aarch64 ;;
     proart-pz13) dmi sys_vendor "ASUSTeK COMPUTER INC."; dmi product_name "ProArt PZ13 HT5306QA_HT5306QA"; dmi product_family "ProArt PZ13"; FAKE_PLATFORM=aarch64-qualcomm ;;
     proart-pz13-not-qualcomm) dmi sys_vendor "ASUSTeK COMPUTER INC."; dmi product_name "ProArt PZ13 HT5306QA_HT5306QA"; FAKE_PLATFORM=aarch64 ;;
     aspire-16-ai) dmi sys_vendor Acer; dmi product_name "Aspire A16-11M"; dmi product_family "Aspire 16 AI"; FAKE_PLATFORM=aarch64-qualcomm ;;
@@ -287,6 +289,11 @@ machine() {
     galaxy-book4-edge-16) FAKE_PLATFORM=aarch64-qualcomm; FAKE_COMPATIBLE="samsung,galaxy-book4-edge-16 samsung,galaxy-book4-edge qcom,x1e80100" ;;
     zenbook-14-ux3480qa) dmi sys_vendor ASUS; dmi product_name "Zenbook 14 UX3480QA"; dmi product_family "Zenbook 14"; FAKE_PLATFORM=aarch64-qualcomm ;;
     zenbook-14-ux3480qa-not-qualcomm) dmi sys_vendor ASUS; dmi product_name "Zenbook 14 UX3480QA"; FAKE_PLATFORM=aarch64 ;;
+    zenbook-a14-qa) dmi sys_vendor "ASUSTeK COMPUTER INC."; dmi product_name "ASUS Zenbook A14 UX3407QA_UX3407QA"; dmi product_family "ASUS Zenbook A14"; FAKE_PLATFORM=aarch64-qualcomm ;;
+    zenbook-a14-ra) dmi sys_vendor "ASUSTeK COMPUTER INC."; dmi product_name "ASUS Zenbook A14 UX3407RA_UX3407RA"; dmi product_family "ASUS Zenbook A14"; FAKE_PLATFORM=aarch64-qualcomm ;;
+    zenbook-a14-not-qualcomm) dmi sys_vendor "ASUSTeK COMPUTER INC."; dmi product_name "ASUS Zenbook A14 UX3407QA_UX3407QA"; FAKE_PLATFORM=aarch64 ;;
+    # The Snapdragon X2 model runs a Glymur tree and is left out.
+    zenbook-a14-x2) dmi sys_vendor ASUS; dmi product_name "Zenbook A14 UX3407NA"; dmi product_family "Zenbook A14"; FAKE_PLATFORM=aarch64-qualcomm ;;
     xps13-ptl) xps13; FAKE_LSPCI="00:02.0 VGA compatible controller: Intel Corporation Panther Lake [Intel Graphics]" ;;
     xps13-wcl) xps13; FAKE_LSPCI="00:02.0 VGA compatible controller: Intel Corporation Wildcat Lake [Intel Graphics]" ;;
     xps13-dx13261) xps13 DX13261; FAKE_LSPCI="00:02.0 VGA compatible controller: Intel Corporation Panther Lake [Intel Graphics]" ;;
@@ -333,12 +340,14 @@ run_leaf() {
     OMARCHY_SURFACE_MKINITCPIO_DIR="$root/etc/mkinitcpio.conf.d" \
     OMARCHY_ASPIRE_16_AI_MKINITCPIO_DIR="$root/etc/mkinitcpio.conf.d" \
     OMARCHY_ZENBOOK_A16_MKINITCPIO_DIR="$root/etc/mkinitcpio.conf.d" \
+    OMARCHY_ZENBOOK_A14_MKINITCPIO_DIR="$root/etc/mkinitcpio.conf.d" \
     OMARCHY_ZENBOOK_A16_LIMINE_CONFIG_DIR="$root/etc/limine-entry-tool.d" \
     OMARCHY_GALAXY_BOOK4_EDGE_14_LIMINE_CONFIG_DIR="$root/etc/limine-entry-tool.d" \
     OMARCHY_ZENBOOK_A16_SLEEP_CONFIG_DIR="$root/etc/systemd/sleep.conf.d" \
     OMARCHY_VIVOBOOK_S15_MKINITCPIO_DIR="$root/etc/mkinitcpio.conf.d" \
     OMARCHY_VIVOBOOK_S16_MKINITCPIO_DIR="$root/etc/mkinitcpio.conf.d" \
     OMARCHY_OMNIBOOK_X14_MKINITCPIO_DIR="$root/etc/mkinitcpio.conf.d" \
+    OMARCHY_IDEACENTRE_MINI_MKINITCPIO_DIR="$root/etc/mkinitcpio.conf.d" \
     OMARCHY_QUALCOMM_MKINITCPIO_DIR="$root/etc/mkinitcpio.conf.d" \
     OMARCHY_ZENBOOK_UX3480QA_MKINITCPIO_DIR="$root/etc/mkinitcpio.conf.d" \
     OMARCHY_ZENBOOK_UX3480QA_SLEEP_CONFIG_DIR="$root/etc/systemd/sleep.conf.d" \
@@ -372,10 +381,12 @@ leaves=(
   hardware/asus/fix-asus-vivobook-s15-boot.sh
   hardware/asus/fix-asus-vivobook-s16-boot.sh
   hardware/hp/fix-hp-omnibook-x14-boot.sh
+  hardware/lenovo/fix-lenovo-ideacentre-mini-boot.sh
   hardware/samsung/galaxy-book4-edge-14.sh
   hardware/qualcomm/glymur-display.sh
   hardware/qualcomm/oem-firmware.sh
   hardware/asus/fix-asus-zenbook-14-ux3480qa-boot.sh
+  hardware/asus/fix-asus-zenbook-a14-boot.sh
   hardware/asus/fix-asus-zenbook-14-ux3480qa-audio.sh
   hardware/dell-xps13-ptl-speaker-firmware.sh
   hardware/fix-ath12k-board-data.sh
@@ -476,6 +487,10 @@ hardware/hp/fix-hp-omnibook-x14-boot.sh|omnibook-x14|0|wrote etc/mkinitcpio.conf
 hardware/hp/fix-hp-omnibook-x14-boot.sh|omnibook-x14+unreadable|0
 hardware/hp/fix-hp-omnibook-x14-boot.sh|omnibook-x14-not-qualcomm|0
 hardware/hp/fix-hp-omnibook-x14-boot.sh|omnibook-ultra-14|0
+hardware/lenovo/fix-lenovo-ideacentre-mini-boot.sh|ideacentre-mini|0|wrote etc/mkinitcpio.conf.d/ideacentre-mini-initramfs.conf
+hardware/lenovo/fix-lenovo-ideacentre-mini-boot.sh|ideacentre-mini+unreadable|0
+hardware/lenovo/fix-lenovo-ideacentre-mini-boot.sh|ideacentre-mini-not-qualcomm|0
+hardware/lenovo/fix-lenovo-ideacentre-mini-boot.sh|omnibook-x14|0
 hardware/qualcomm/glymur-display.sh|omnibook-ultra-14|0|wrote etc/mkinitcpio.conf.d/qualcomm-glymur-display.conf
 # The device tree names the chip, so unreadable DMI does not matter.
 hardware/qualcomm/glymur-display.sh|omnibook-ultra-14+unreadable|0|wrote etc/mkinitcpio.conf.d/qualcomm-glymur-display.conf
@@ -488,6 +503,12 @@ hardware/asus/fix-asus-zenbook-14-ux3480qa-boot.sh|zenbook-14-ux3480qa|0|wrote e
 hardware/asus/fix-asus-zenbook-14-ux3480qa-boot.sh|zenbook-14-ux3480qa+unreadable|0
 hardware/asus/fix-asus-zenbook-14-ux3480qa-boot.sh|zenbook-14-ux3480qa-not-qualcomm|0
 hardware/asus/fix-asus-zenbook-14-ux3480qa-boot.sh|zenbook-a16|0
+hardware/asus/fix-asus-zenbook-a14-boot.sh|zenbook-a14-qa|0|wrote etc/mkinitcpio.conf.d/zenbook-a14-initramfs.conf
+hardware/asus/fix-asus-zenbook-a14-boot.sh|zenbook-a14-ra|0|wrote etc/mkinitcpio.conf.d/zenbook-a14-initramfs.conf
+hardware/asus/fix-asus-zenbook-a14-boot.sh|zenbook-a14-qa+unreadable|0
+hardware/asus/fix-asus-zenbook-a14-boot.sh|zenbook-a14-not-qualcomm|0
+hardware/asus/fix-asus-zenbook-a14-boot.sh|zenbook-a14-x2|0
+hardware/asus/fix-asus-zenbook-a14-boot.sh|zenbook-14-ux3480qa|0
 hardware/asus/fix-asus-zenbook-14-ux3480qa-audio.sh|zenbook-14-ux3480qa|0|pkg-add asus-zenbook-14-ux3480qa-audio
 hardware/asus/fix-asus-zenbook-14-ux3480qa-audio.sh|zenbook-14-ux3480qa+unreadable|0
 hardware/asus/fix-asus-zenbook-14-ux3480qa-audio.sh|zenbook-14-ux3480qa-not-qualcomm|0
