@@ -76,6 +76,7 @@ inxi
 networkmanager
 jq
 kernel-modules-hook
+kmscon
 lazygit
 less
 libsecret
